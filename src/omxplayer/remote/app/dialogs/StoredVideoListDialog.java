@@ -1,0 +1,114 @@
+package omxplayer.remote.app.dialogs;
+
+import omxplayer.remote.app.R;
+import omxplayer.remote.app.VideoItem;
+import omxplayer.remote.app.VideoSentListener;
+import omxplayer.remote.app.adapters.CustomAdapter;
+import omxplayer.remote.app.network.WifiConnection;
+import omxplayer.remote.app.tasks.FileSender;
+import omxplayer.remote.app.utils.Sound;
+import omxplayer.remote.app.utils.Utils;
+import android.app.Dialog;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
+import android.widget.Toast;
+
+public class StoredVideoListDialog extends Dialog {
+
+	private Context context;
+	private FileSender fileSender;
+	private Sound sound;
+	private CustomAdapter adapter;
+	private GridView gridView;
+	private WifiConnection wifiConnection;
+	private VideoItem videoToSend;
+	private String recentSentVideoName;
+
+	public StoredVideoListDialog(Context context, CustomAdapter adapter,
+			WifiConnection wifiConnection, Sound sound) {
+		super(context);
+		this.context = context;
+		this.adapter = adapter;
+		this.wifiConnection = wifiConnection;
+		this.sound = sound;
+		setupDialog();
+	}
+
+	private void setupDialog() {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.videos_list_send);
+		final Window window = getWindow();
+		window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
+				WindowManager.LayoutParams.WRAP_CONTENT);
+		window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+		window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		gridView = (GridView) findViewById(R.id.gridView1);
+		findViewById(R.id.done_btn).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// actual sending
+						if (!Utils.connected) {
+							Toast.makeText(context, "Not conected",
+									Toast.LENGTH_SHORT).show();
+							return;
+						}
+						if (videoToSend != null) {
+							dismiss();
+							fileSender = new FileSender(sound);
+							fileSender
+									.setFinishedListener(new VideoSentListener() {
+
+										@Override
+										public void finishedSending(
+												boolean finished) {
+											if (finished
+													&& !fileSender.isCanceled()) {
+												wifiConnection
+														.send(Utils.fileSentCmd + recentSentVideoName);
+											}
+										}
+									});
+
+							fileSender.exec(context, videoToSend.getPath(),
+									wifiConnection);
+							videoToSend = null;
+						}
+					}
+				});
+	}
+
+	private void prepareDialog() {
+		fileSender = null;
+		recentSentVideoName = "";
+		videoToSend = null;
+		gridView.setAdapter(adapter);
+		gridView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int arg2,
+					long arg3) {
+				videoToSend = (VideoItem) adapter.getItem(arg2);
+				recentSentVideoName = new String(videoToSend.getName());
+				if (recentSentVideoName.contains(" "))
+					recentSentVideoName = "\"" + recentSentVideoName + "\"";
+				adapter.setSelectedIndex(arg2);
+			}
+
+		});
+	}
+
+	@Override
+	public void show() {
+		prepareDialog();
+		super.show();
+	}
+}
