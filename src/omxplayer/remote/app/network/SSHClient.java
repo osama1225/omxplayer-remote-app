@@ -52,7 +52,15 @@ public class SSHClient extends AsyncTask<Void, Void, Void> {
 		}
 	}
 
-	public synchronized String executeCmd(String cmd) {
+	public String executeCmd(String cmd, String... additionalParams) {
+		String finalCommand = cmd;
+		if(additionalParams != null && additionalParams.length > 0){
+			finalCommand = cmd + "\"" + additionalParams[0] + "\"";
+		}
+		return executeCmd(finalCommand);
+	}
+
+	private synchronized String executeCmd(String cmd) {
 		try {
 			ChannelExec channelssh = (ChannelExec) session.openChannel("exec");
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();

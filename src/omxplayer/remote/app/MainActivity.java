@@ -5,8 +5,10 @@ import omxplayer.remote.app.adapters.PagerAdapter;
 import omxplayer.remote.app.adapters.StoredVideoListAdapter;
 import omxplayer.remote.app.adapters.VideoListRemovalAdapter;
 import omxplayer.remote.app.controls.PlayerControllers;
+import omxplayer.remote.app.dialogs.CustomDialog;
 import omxplayer.remote.app.dialogs.PasswordDialog;
 import omxplayer.remote.app.dialogs.StoredVideoListDialog;
+import omxplayer.remote.app.dialogs.VideoListRemovalDialog;
 import omxplayer.remote.app.handlers.ConnectionServiceHandler;
 import omxplayer.remote.app.handlers.LongTouchListener;
 import omxplayer.remote.app.network.SSHClient;
@@ -15,7 +17,6 @@ import omxplayer.remote.app.services.PlayerControlService;
 import omxplayer.remote.app.tasks.FileSender;
 import omxplayer.remote.app.utils.Sound;
 import omxplayer.remote.app.utils.Utils;
-
 import omxplayer.remote.app.R;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -48,8 +49,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private boolean playing;
 	private ImageButton playBtn;
 
-	private String videoNameToRemove;
-
 	private boolean useImageBg;
 	private Camera cam;
 	private CameraView camView;
@@ -64,7 +63,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	private ConnectionServiceHandler connectionHandler;
 
-	private Dialog storedVideoListDialog;
+	private CustomDialog storedVideoListDialog;
+	private CustomDialog videoListRemovalDialog;
 	private Dialog passwordDialog;
 
 	@Override
@@ -83,9 +83,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		changeBgSrc();
 
 		playing = true;
-		// videoSendingfinished = true;
-		// canCheckVideos = true;
-		videoNameToRemove = "";
 
 		sound = new Sound();
 		progressBar = (ProgressBar) findViewById(R.id.progressBar1);
@@ -226,12 +223,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			cmd = "";
 			return;
 		}
-		if (!cmd.equals(""))
+		if (!cmd.equals("")) {
 			sendControlMessage(cmd);
-
+		}
 	}
 
-	private void showVideoList() {
+	private void prepareAndShowVideoListDialog() {
 		class processing extends AsyncTask<Void, Void, Void> {
 			private CustomAdapter storedVideoListAdapter;
 
@@ -257,11 +254,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				super.onPostExecute(result);
 				if (storedVideoListDialog == null) {
 					storedVideoListDialog = new StoredVideoListDialog(
-							MainActivity.this, storedVideoListAdapter,
-							getWifiConnection(), sound);
+							MainActivity.this, getWifiConnection(), sound);
 				}
 				progressBar.setVisibility(View.INVISIBLE);
-				storedVideoListDialog.show();
+				storedVideoListDialog.prepareAndShow(storedVideoListAdapter);
 			}
 
 		}
@@ -270,53 +266,44 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	}
 
-	private void showVidoeRemovalSelection(
-			final VideoListRemovalAdapter removalList, final String[] videoNames) {
-
-		final Dialog dialog = new Dialog(MainActivity.this);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setContentView(R.layout.videos_list_remove);
-		final Window window = dialog.getWindow();
-		window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.WRAP_CONTENT);
-		window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-		window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-		GridView lv = (GridView) dialog.findViewById(R.id.gridView2);
-		dialog.findViewById(R.id.delete_btn_id).setOnClickListener(
-				new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						if (!videoNameToRemove.equals("")) {
-							// send the video index to the
-							// player to remove
-							dialog.dismiss();
-							// send command to remove that video by name
-							if (videoNameToRemove.contains(" "))
-								videoNameToRemove = "\"" + videoNameToRemove
-										+ "\"";
-							wifiConnection.send(Utils.removeCmd
-									+ videoNameToRemove);
-							Toast.makeText(getApplicationContext(),
-									"Successfully Removed!", Toast.LENGTH_SHORT)
-									.show();
-							videoNameToRemove = "";
-						}
-					}
-				});
-		lv.setAdapter(removalList);
-		lv.setOnItemClickListener(new OnItemClickListener() {
+	private void prepareAndShowVidoeListRemovalDialog() {
+		class processing extends AsyncTask<Void, Void, Void> {
+			private CustomAdapter videoListRemovalAdapter;
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				videoNameToRemove = videoNames[arg2];
-				removalList.setSelectedIndex(arg2);
+			protected void onPreExecute() {
+				super.onPreExecute();
+				progressBar.setVisibility(View.VISIBLE);
 			}
-		});
-		progressBar.setVisibility(ProgressBar.GONE);
-		dialog.show();
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				if (Looper.myLooper() == null)
+					Looper.prepare();
+				String response = wifiConnection
+						.send(Utils.retrieveplaylistCmd);
+				String[] videoNames = response.split("\n");
+				videoListRemovalAdapter = new VideoListRemovalAdapter(
+						videoNames, MainActivity.this);
+				if (Looper.myLooper() != null)
+					Looper.myLooper().quit();
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+				if (videoListRemovalDialog == null) {
+					videoListRemovalDialog = new VideoListRemovalDialog(
+							MainActivity.this, getWifiConnection());
+				}
+				progressBar.setVisibility(ProgressBar.INVISIBLE);
+				videoListRemovalDialog.prepareAndShow(videoListRemovalAdapter);
+			}
+
+		}
+		new processing().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new Void[] {});
 	}
 
 	/**
@@ -441,7 +428,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 					@Override
 					public void onClick(View v) {
-						showVideoList();
+						prepareAndShowVideoListDialog();
 						dialog.dismiss();
 					}
 				});
@@ -451,21 +438,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 					@Override
 					public void onClick(View v) {
-
-						// retrieve list of names in the video dir from pi
 						dialog.dismiss();
 						if (!Utils.connected) {
 							Toast.makeText(MainActivity.this, "Not conected",
 									Toast.LENGTH_SHORT).show();
 							return;
 						}
-						progressBar.setVisibility(ProgressBar.VISIBLE);
-						String res = wifiConnection
-								.send(Utils.retrieveplaylistCmd);
-						String[] videoNames = res.split("\n");
-						final VideoListRemovalAdapter removalList = new VideoListRemovalAdapter(
-								videoNames, MainActivity.this);
-						showVidoeRemovalSelection(removalList, videoNames);
+						prepareAndShowVidoeListRemovalDialog();
 					}
 				});
 
@@ -553,14 +532,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (fileSender != null) {
 			fileSender = null;
 		}
-		if (cam != null)
+		if (cam != null) {
 			cam.release();
+		}
 		// WakeLocker.release();
-
-		// reset
-		// videoSendingfinished = true;
-		// canCheckVideos = true;
-		videoNameToRemove = "";
 		progressBar = null;
 		super.onDestroy();
 		System.exit(0);

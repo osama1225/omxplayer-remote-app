@@ -72,10 +72,7 @@ public class PlayListFragment extends Fragment {
 					long arg3) {
 				String selectedName = adapter.getNames().get(arg2);
 				adapter.setCurrentlyPlaying(selectedName);
-				if (selectedName.contains(" "))
-					selectedName = "\"" + selectedName + "\"";
-				// send the cmd
-				wifiConn.send(Utils.selectVideoCmd + selectedName);
+				wifiConn.send(Utils.selectVideoCmd,selectedName);
 				connectionServiceHandler.changePlayState("p");
 			}
 		});

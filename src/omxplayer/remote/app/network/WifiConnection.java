@@ -311,9 +311,9 @@ public class WifiConnection {
 
 	}
 
-	public String send(String cmd) {
+	public String send(String cmd,String...optionalParams) {
 		if (discovery != null && discovery.getSSH() != null)
-			return discovery.getSSH().executeCmd(cmd);
+			return discovery.getSSH().executeCmd(cmd,optionalParams);
 		return "";
 	}
 

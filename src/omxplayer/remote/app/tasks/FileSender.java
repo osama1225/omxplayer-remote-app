@@ -57,7 +57,7 @@ public class FileSender extends AsyncTask<Void, Integer, String> {
 			fis = new FileInputStream(f);
 			this.c = c;
 			this.conn = conn;
-			canceled=false;
+			canceled = false;
 		} catch (Exception e) {
 			closeStreams();
 			return;
@@ -121,21 +121,18 @@ public class FileSender extends AsyncTask<Void, Integer, String> {
 		super.onPostExecute(result);
 		if (result.equals("error")) {
 			// remove the partially created there
-			String fileName=f.getName();
-			if(fileName.contains(" "))
-				fileName= "\"" + fileName +"\"";
-			conn.send(Utils.removeCmd + f.getName());
+			conn.send(Utils.removeCmd, f.getName());
 			if (sound != null) {
 				Toast.makeText(c, "Not Sent!", Toast.LENGTH_LONG).show();
 				sound.play(c, R.raw.fail);
 			}
-//			notifyListener(false);
+			// notifyListener(false);
 		} else {
 			Toast.makeText(c, "Successfully Sent!", Toast.LENGTH_LONG).show();
 			sound.play(c, R.raw.success);
 		}
 		notifyListener(true);
-		
+
 	}
 
 	@Override
@@ -189,7 +186,7 @@ public class FileSender extends AsyncTask<Void, Integer, String> {
 
 			@Override
 			public void onCancel(DialogInterface dialog) {
-				canceled=true;
+				canceled = true;
 				closeStreams();
 			}
 		});

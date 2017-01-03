@@ -8,7 +8,6 @@ import omxplayer.remote.app.network.WifiConnection;
 import omxplayer.remote.app.tasks.FileSender;
 import omxplayer.remote.app.utils.Sound;
 import omxplayer.remote.app.utils.Utils;
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -20,22 +19,20 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.Toast;
 
-public class StoredVideoListDialog extends Dialog {
+public class StoredVideoListDialog extends CustomDialog {
 
 	private Context context;
 	private FileSender fileSender;
 	private Sound sound;
-	private CustomAdapter adapter;
 	private GridView gridView;
 	private WifiConnection wifiConnection;
 	private VideoItem videoToSend;
 	private String recentSentVideoName;
 
-	public StoredVideoListDialog(Context context, CustomAdapter adapter,
+	public StoredVideoListDialog(Context context,
 			WifiConnection wifiConnection, Sound sound) {
 		super(context);
 		this.context = context;
-		this.adapter = adapter;
 		this.wifiConnection = wifiConnection;
 		this.sound = sound;
 		setupDialog();
@@ -72,8 +69,9 @@ public class StoredVideoListDialog extends Dialog {
 												boolean finished) {
 											if (finished
 													&& !fileSender.isCanceled()) {
-												wifiConnection
-														.send(Utils.fileSentCmd + recentSentVideoName);
+												wifiConnection.send(
+														Utils.fileSentCmd,
+														recentSentVideoName);
 											}
 										}
 									});
@@ -86,29 +84,27 @@ public class StoredVideoListDialog extends Dialog {
 				});
 	}
 
-	private void prepareDialog() {
+	private void prepareDialog(final CustomAdapter storedVideoListAdapter) {
 		fileSender = null;
 		recentSentVideoName = "";
 		videoToSend = null;
-		gridView.setAdapter(adapter);
+		gridView.setAdapter(storedVideoListAdapter);
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int arg2,
 					long arg3) {
-				videoToSend = (VideoItem) adapter.getItem(arg2);
+				videoToSend = (VideoItem) storedVideoListAdapter.getItem(arg2);
 				recentSentVideoName = new String(videoToSend.getName());
-				if (recentSentVideoName.contains(" "))
-					recentSentVideoName = "\"" + recentSentVideoName + "\"";
-				adapter.setSelectedIndex(arg2);
+				storedVideoListAdapter.setSelectedIndex(arg2);
 			}
 
 		});
 	}
 
 	@Override
-	public void show() {
-		prepareDialog();
-		super.show();
+	public void prepareAndShow(CustomAdapter adapter) {
+		prepareDialog(adapter);
+		show();
 	}
 }
