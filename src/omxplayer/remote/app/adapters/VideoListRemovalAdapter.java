@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import omxplayer.remote.app.R;
+import omxplayer.remote.app.adapters.viewholders.RemoveMediaViewHolder;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,24 +58,33 @@ public class VideoListRemovalAdapter extends CustomAdapter<String> {
 	@SuppressWarnings("deprecation")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View view = LayoutInflater.from(c).inflate(
-				R.layout.video_item_view_remove2, null);
+		RemoveMediaViewHolder viewHolder;
+		if(convertView == null){
+			convertView = LayoutInflater.from(c).inflate(
+					R.layout.video_item_view_remove, null);
+			viewHolder = new RemoveMediaViewHolder();
+			viewHolder.setNameTextView((TextView) convertView.findViewById(R.id.name_id3));
+			viewHolder.setThumbnailImageView((ImageView) convertView.findViewById(R.id.cover_img3));
+			viewHolder.setSelectedMarkImageView((ImageView) convertView.findViewById(R.id.selected_img_id3));
+			convertView.setTag(viewHolder);
+		} else {
+			viewHolder = (RemoveMediaViewHolder) convertView.getTag();
+		}
 		String name = names.get(position).substring(
 				names.get(position).lastIndexOf("/") + 1,
 				names.get(position).length());
-		((TextView) view.findViewById(R.id.name_id3)).setText(name);
+		viewHolder.getNameTextView().setText(name);
 
-		ImageView cover = ((ImageView) view.findViewById(R.id.cover_img3));
+		ImageView thumbnailImageView = viewHolder.getThumbnailImageView();
 
 		if (selectedIndex != -1 && selectedIndex == position) {
-			((ImageView) view.findViewById(R.id.selected_img_id3))
-					.setVisibility(ImageView.VISIBLE);
-			cover.setAlpha(150);
-		} else
-			((ImageView) view.findViewById(R.id.selected_img_id3))
-					.setVisibility(ImageView.INVISIBLE);
+			viewHolder.getSelectedMarkImageView().setVisibility(ImageView.VISIBLE);
+			thumbnailImageView.setAlpha(150);
+		} else{
+			viewHolder.getSelectedMarkImageView().setVisibility(ImageView.INVISIBLE);
+		}
 
-		return view;
+		return convertView;
 	}
 
 	@Override

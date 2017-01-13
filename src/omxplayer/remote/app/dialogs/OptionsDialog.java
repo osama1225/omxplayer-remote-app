@@ -28,7 +28,7 @@ public class OptionsDialog extends Dialog {
 
 	private void setupDialog() {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.options_dialog_2);
+		setContentView(R.layout.options_dialog);
 		final Window window = getWindow();
 		window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
 				WindowManager.LayoutParams.WRAP_CONTENT);

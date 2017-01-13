@@ -6,6 +6,7 @@ import java.util.List;
 
 import omxplayer.remote.app.VideoItem;
 import omxplayer.remote.app.R;
+import omxplayer.remote.app.adapters.viewholders.SendMediaViewHolder;
 import android.content.Context;
 import android.database.Cursor;
 import android.media.ThumbnailUtils;
@@ -108,40 +109,51 @@ public class StoredVideoListAdapter extends CustomAdapter<VideoItem> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
-		View view = LayoutInflater.from(c).inflate(R.layout.video_item_view_send,
-				null);
-		((TextView) view.findViewById(R.id.name_id)).setText(videos.get(
+		SendMediaViewHolder viewHolder;
+		if(convertView == null){
+			convertView = LayoutInflater.from(c).inflate(R.layout.video_item_view_send,
+					null);
+			viewHolder = new SendMediaViewHolder();
+			viewHolder.setNameTextView((TextView) convertView.findViewById(R.id.name_id));
+			viewHolder.setSizeTextView((TextView) convertView.findViewById(R.id.size_id));
+			viewHolder.setThumbnailImageView((ImageView) convertView.findViewById(R.id.cover_img));
+			viewHolder.setSelectedMarkImageView((ImageView) convertView.findViewById(R.id.selected_img_id));
+			convertView.setTag(viewHolder);
+		}else {
+			viewHolder = (SendMediaViewHolder) convertView.getTag();
+		}
+		
+		viewHolder.getNameTextView().setText(videos.get(
 				position).getName());
 		Long actualSize = videos.get(position).getSize();
 		double size = actualSize / 1024.0f;
 		String unit = "Bytes";
-		if (size <= 0)
+		if (size <= 0){
 			size = actualSize;
-		else {
+		}else {
 			unit = "KByte";
 			size /= 1024;
-			if (size <= 0)
+			if (size <= 0){
 				size *= 1024;
-			else
+			}else{
 				unit = "MB";
+			}
 
 		}
 		String sizeString = String.format("%.2f", size);
-
-		((TextView) view.findViewById(R.id.size_id)).setText(sizeString + " "
+		viewHolder.getSizeTextView().setText(sizeString + " "
 				+ unit);
-		ImageView cover = ((ImageView) view.findViewById(R.id.cover_img));
-		cover.setImageBitmap(videos.get(position).getVideoImage());
+		ImageView thumbnailImageView = viewHolder.getThumbnailImageView();
+		thumbnailImageView.setImageBitmap(videos.get(position).getVideoImage());
 
 		if (selectedIndex != -1 && selectedIndex == position) {
-			((ImageView) view.findViewById(R.id.selected_img_id))
-					.setVisibility(ImageView.VISIBLE);
-			cover.setAlpha(150);
-		} else
-			((ImageView) view.findViewById(R.id.selected_img_id))
-					.setVisibility(ImageView.INVISIBLE);
+			viewHolder.getSelectedMarkImageView().setVisibility(ImageView.VISIBLE);
+			thumbnailImageView.setAlpha(150);
+		} else{
+			viewHolder.getSelectedMarkImageView().setVisibility(ImageView.INVISIBLE);
+		}
 
-		return view;
+		return convertView;
 	}
 
 	@Override
@@ -150,6 +162,5 @@ public class StoredVideoListAdapter extends CustomAdapter<VideoItem> {
 			videos.clear();
 			videos.addAll(items);
 		}
-		
 	}
 }

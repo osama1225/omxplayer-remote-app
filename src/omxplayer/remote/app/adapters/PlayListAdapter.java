@@ -67,17 +67,22 @@ public class PlayListAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int arg0, View arg1, ViewGroup arg2) {
-
-		View view = LayoutInflater.from(c).inflate(
-				R.layout.video_item_view_select, null);
-		TextView tv = (TextView) view.findViewById(R.id.video_name);
+	public View getView(int arg0, View convertView, ViewGroup arg2) {
+		TextView textView;
+		if(convertView == null){
+			convertView = LayoutInflater.from(c).inflate(
+					R.layout.video_item_view_select, null);
+			textView = (TextView) convertView.findViewById(R.id.video_name);
+			convertView.setTag(textView);
+		} else {
+			textView = (TextView) convertView.getTag();
+		}
 		String name = names.get(arg0).substring(
 				names.get(arg0).lastIndexOf("/") + 1, names.get(arg0).length());
-		tv.setText(name);
-		if (!names.get(arg0).equals(currentlyPlaying))
-			tv.setAlpha(.6f);
-		return view;
-
+		textView.setText(name);
+		if (!names.get(arg0).equals(currentlyPlaying)){
+			textView.setAlpha(.6f);
+		}
+		return convertView;
 	}
 }

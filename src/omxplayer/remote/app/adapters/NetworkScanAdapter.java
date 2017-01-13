@@ -45,15 +45,19 @@ public class NetworkScanAdapter extends CustomAdapter<ScanResult> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View v = convertView;
-		v = ((LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
-				R.layout.device_name, null);
-
-		TextView view = (TextView) v.findViewById(R.id.nameId);
+		TextView textView;
+		if(convertView == null){
+			convertView = ((LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+							R.layout.device_name, null);
+			textView = (TextView) convertView.findViewById(R.id.nameId);
+			convertView.setTag(textView);
+		}else {
+			textView = (TextView) convertView.getTag();
+		}
 		ScanResult network = networks.get(position);
-		view.setText(network.SSID + "\n" + network.BSSID);
-		return view;
+		textView.setText(network.SSID + "\n" + network.BSSID);
+		return convertView;
 	}
 
 	@Override
