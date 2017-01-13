@@ -19,7 +19,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.Toast;
 
-public class StoredVideoListDialog extends CustomDialog {
+public class StoredVideoListDialog extends CustomDialog<VideoItem> {
 
 	private Context context;
 	private FileSender fileSender;
@@ -84,7 +84,7 @@ public class StoredVideoListDialog extends CustomDialog {
 				});
 	}
 
-	private void prepareDialog(final CustomAdapter storedVideoListAdapter) {
+	private void prepareDialog(final CustomAdapter<VideoItem> storedVideoListAdapter) {
 		fileSender = null;
 		recentSentVideoName = "";
 		videoToSend = null;
@@ -103,7 +103,7 @@ public class StoredVideoListDialog extends CustomDialog {
 	}
 
 	@Override
-	public void prepareAndShow(CustomAdapter adapter) {
+	public void prepareAndShow(CustomAdapter<VideoItem> adapter) {
 		prepareDialog(adapter);
 		show();
 	}

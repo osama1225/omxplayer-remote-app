@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="omxplayer.remote.app"
-    android:versionCode="23"
+    android:versionCode="24"
     android:versionName="2.3.3" >
 
     <uses-sdk

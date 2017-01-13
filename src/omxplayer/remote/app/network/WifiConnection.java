@@ -4,25 +4,20 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import omxplayer.remote.app.MainActivity;
+import omxplayer.remote.app.adapters.CustomAdapter;
+import omxplayer.remote.app.adapters.NetworkScanAdapter;
+import omxplayer.remote.app.dialogs.DialogsManager;
 import omxplayer.remote.app.handlers.ConnectionServiceHandler;
 import omxplayer.remote.app.utils.Utils;
-
-import omxplayer.remote.app.R;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
@@ -30,21 +25,8 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.LinearLayout.LayoutParams;
 
 public class WifiConnection {
 
@@ -53,27 +35,21 @@ public class WifiConnection {
 	private WifiManager wifiManager;
 	private wifiScanReceiver receiver;
 	private IntentFilter filter;
-	private List<ScanResult> networks;
-	private ArrayAdapter<ScanResult> adapter;
-
-	private Dialog dialog;
-	private Button scanButton;
-	private ListView networkList;
-	private ProgressBar scanning;
+	private CustomAdapter<ScanResult> networksAdapter;
 
 	private NSD discovery;
 
-	private Hashtable<String, String> savedNW;
+	private Hashtable<String, String> savedNetworks;
 	private boolean connectedFromApp;
+
+	private DialogsManager dialogsManager;
 
 	public WifiConnection(Activity context,
 			ConnectionServiceHandler connectionServiceHandler) {
 		connectedFromApp = false;
 		this.context = context;
 		this.connectionServiceHandler = connectionServiceHandler;
-		networks = new ArrayList<ScanResult>();
-		this.adapter = new NetworkScanAdapter(context,
-				R.layout.peers_selection_layout, networks);
+		this.networksAdapter = new NetworkScanAdapter(context, null);
 		enableWifi();
 		filter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
 		filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
@@ -90,58 +66,7 @@ public class WifiConnection {
 
 	}
 
-	public void showScanDialog() {
-		dialog = new Dialog(context);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setContentView(R.layout.peers_selection_layout);
-		final Window window = dialog.getWindow();
-		window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.WRAP_CONTENT);
-		window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-		window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-		scanButton = (Button) dialog.findViewById(R.id.scan_button_id);
-		networkList = (ListView) dialog.findViewById(R.id.peersListId);
-		scanning = (ProgressBar) dialog.findViewById(R.id.scanningIdd);
-
-		scanning.setVisibility(View.INVISIBLE);
-		adapter.clear();
-		networkList.setAdapter(adapter);
-		setListeners();
-
-		dialog.show();
-
-	}
-
-	private void setListeners() {
-		scanButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View paramView) {
-				scanning.setLayoutParams(new LayoutParams(
-						LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				scanning.setVisibility(View.VISIBLE);
-				scan();
-
-			}
-		});
-
-		networkList.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				// assuming for now he will choose the right one.
-				dialog.dismiss();
-				MainActivity.progressBar.setVisibility(View.VISIBLE);
-				Utils.SSID = networks.get(arg2).SSID;
-				handleSelectedNetworkToConnect();
-
-			}
-		});
-	}
-
-	private void scan() {
+	public void scanNetworks() {
 		wifiManager.startScan();
 	}
 
@@ -151,7 +76,7 @@ public class WifiConnection {
 	 * ssh session. 1- check if this network is saved before, then don't promote
 	 * for a password, and connect directly
 	 */
-	private void handleSelectedNetworkToConnect() {
+	public void connectToSelectedNetwork() {
 
 		String curr = wifiManager.getConnectionInfo().getSSID();
 		if (curr.equals("\"" + Utils.SSID + "\"")) {
@@ -159,23 +84,23 @@ public class WifiConnection {
 			return;
 		}
 
-		savedNW = readSavedNetworks();
-		if (savedNW != null) {
-			if (!savedNW.containsKey(Utils.SSID))
-				showNetworkPasswordDialog();
+		savedNetworks = readSavedNetworks();
+		if (savedNetworks != null) {
+			if (!savedNetworks.containsKey(Utils.SSID))
+				dialogsManager.showNetworkPasswordDialog();
 			else {
-				Utils.PSK = savedNW.get(Utils.SSID);
-				joinNetwork(true);
+				Utils.PSK = savedNetworks.get(Utils.SSID);
+				joinWifiNetwork(true);
 			}
 		} else
-			showNetworkPasswordDialog();
+			dialogsManager.showNetworkPasswordDialog();
 	}
 
 	/*
 	 * join the network specified by the name id. assuming for now the password
 	 * is fixed
 	 */
-	private void joinNetwork(boolean savedBefore) {
+	public void joinWifiNetwork(boolean savedBefore) {
 		// check if am already connect to the netowrk
 		String curr = wifiManager.getConnectionInfo().getSSID();
 		if (!curr.equals("\"" + Utils.SSID + "\"")) {
@@ -219,7 +144,7 @@ public class WifiConnection {
 			Utils.PSK = "";
 		if (id != -1 && Utils.PSK.equals("")) {
 			wifiManager.removeNetwork(id);
-			showNetworkPasswordDialog();
+			dialogsManager.showNetworkPasswordDialog();
 			return;
 		}
 		if (id == -1) {
@@ -230,7 +155,7 @@ public class WifiConnection {
 				Utils.PSK = "";
 			}
 			if (Utils.PSK == "") {
-				showNetworkPasswordDialog();
+				dialogsManager.showNetworkPasswordDialog();
 				return;
 			}
 			WifiConfiguration conf = new WifiConfiguration();
@@ -249,7 +174,7 @@ public class WifiConnection {
 					.show();
 			MainActivity.progressBar.setVisibility(ProgressBar.INVISIBLE);
 			Utils.PSK = "";
-			showNetworkPasswordDialog();
+			dialogsManager.showNetworkPasswordDialog();
 			return;
 		}
 		Log.d("id : ", "" + id);
@@ -266,54 +191,9 @@ public class WifiConnection {
 			connectedFromApp = true;
 	}
 
-	private void showNetworkPasswordDialog() {
-		final Dialog dialog = new Dialog(context);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setContentView(R.layout.network_password_screen);
-		final Window window = dialog.getWindow();
-		window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.WRAP_CONTENT);
-		window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-		window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-		((TextView) dialog.findViewById(R.id.SSID_id)).setText(Utils.SSID);
-		final EditText network_pass = (EditText) dialog
-				.findViewById(R.id.netowrk_passId);
-
-		dialog.findViewById(R.id.connect_btn_id).setOnClickListener(
-				new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						dialog.dismiss();
-						MainActivity.progressBar.setVisibility(View.VISIBLE);
-						String pass = network_pass.getText().toString().trim();
-						if (pass == null || pass.equals("")) {
-							Toast.makeText(context, "Invalid Password",
-									Toast.LENGTH_SHORT).show();
-							Utils.SSID = "";
-							return;
-						}
-						// trying to connect
-						Utils.PSK = pass;
-						joinNetwork(false);
-
-					}
-				});
-		dialog.setOnCancelListener(new OnCancelListener() {
-
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				MainActivity.progressBar.setVisibility(View.INVISIBLE);
-			}
-		});
-		dialog.show();
-
-	}
-
-	public String send(String cmd,String...optionalParams) {
+	public String send(String cmd, String... optionalParams) {
 		if (discovery != null && discovery.getSSH() != null)
-			return discovery.getSSH().executeCmd(cmd,optionalParams);
+			return discovery.getSSH().executeCmd(cmd, optionalParams);
 		return "";
 	}
 
@@ -357,8 +237,7 @@ public class WifiConnection {
 		wifiManager = null;
 		receiver = null;
 		filter = null;
-		networks = null;
-		adapter = null;
+		networksAdapter = null;
 		if (getSsh() != null)
 			getSsh().closeConnection();
 		if (discovery != null)
@@ -378,24 +257,26 @@ public class WifiConnection {
 				if (!networkInfo.isConnected())
 					Utils.connected = false;
 				else {
-					String curr = wifiManager.getConnectionInfo().getSSID();
+					String currentNetworkSSID = wifiManager.getConnectionInfo()
+							.getSSID();
 					if (connectedFromApp
-							&& curr.equals("\"" + Utils.SSID + "\"")) {
+							&& currentNetworkSSID.equals("\"" + Utils.SSID
+									+ "\"")) {
 						connectedFromApp = false;
-						saveNw();
+						saveNetwork();
 						discovery = new NSD(WifiConnection.this.context,
 								connectionServiceHandler);
 					}
 				}
 			} else if (intent.getAction().equals(
 					WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-				networks = wifiManager.getScanResults();
-				if (scanning != null
-						&& scanning.getVisibility() == ProgressBar.VISIBLE) {
-					scanning.setVisibility(View.GONE);
-					adapter.clear();
-					adapter.addAll(networks);
-					adapter.notifyDataSetChanged();
+				ProgressBar scanningBar = dialogsManager.getScanDialog()
+						.getScanningProgessBar();
+				if (scanningBar != null
+						&& scanningBar.getVisibility() == ProgressBar.VISIBLE) {
+					scanningBar.setVisibility(View.GONE);
+					networksAdapter.setItems(wifiManager.getScanResults());
+					networksAdapter.notifyDataSetChanged();
 				}
 
 			} else if (intent.getAction().equals(
@@ -412,7 +293,7 @@ public class WifiConnection {
 						if (!currNetwork.equals("\"" + Utils.SSID + "\"")) {
 							connectionServiceHandler.connectionFailed();
 						} else {
-							saveNw();
+							saveNetwork();
 							// discovery = new NSD(WifiConnection.this.context);
 						}
 					}
@@ -429,32 +310,6 @@ public class WifiConnection {
 				}
 			}
 		}
-	}
-
-	class NetworkScanAdapter extends ArrayAdapter<ScanResult> {
-		private List<ScanResult> networks;
-		private Context c;
-
-		public NetworkScanAdapter(Context context, int textViewResourceId,
-				List<ScanResult> objects) {
-			super(context, textViewResourceId, objects);
-			c = context;
-			this.networks = objects;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View v = convertView;
-			v = ((LayoutInflater) c
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-					.inflate(R.layout.device_name, null);
-
-			TextView view = (TextView) v.findViewById(R.id.nameId);
-			ScanResult network = networks.get(position);
-			view.setText(network.SSID + "\n" + network.BSSID);
-			return view;
-		}
-
 	}
 
 	public void joinDisplayToNetwork(final String name, final String pass) {
@@ -506,21 +361,21 @@ public class WifiConnection {
 		return networks;
 	}
 
-	private void saveNw() {
+	private void saveNetwork() {
 		// get saved networks
-		savedNW = readSavedNetworks();
-		if (savedNW == null)
-			savedNW = new Hashtable<String, String>();
+		savedNetworks = readSavedNetworks();
+		if (savedNetworks == null)
+			savedNetworks = new Hashtable<String, String>();
 		// check if this network is saved before
 		// if (savedNW.containsKey(Utils.SSID))
 		// return;
-		savedNW.put(Utils.SSID, Utils.password);
+		savedNetworks.put(Utils.SSID, Utils.password);
 		FileOutputStream fout = null;
 		ObjectOutputStream out = null;
 		try {
 			fout = context.openFileOutput("networks", 0);
 			out = new ObjectOutputStream(fout);
-			out.writeObject(savedNW);
+			out.writeObject(savedNetworks);
 		} catch (Exception e) {
 			Log.d("error", "Error in saving new network : " + e.getMessage());
 		} finally {
@@ -534,4 +389,11 @@ public class WifiConnection {
 		}
 	}
 
+	public CustomAdapter<ScanResult> getNetworksAdapter() {
+		return networksAdapter;
+	}
+
+	public void setDialogsManager(DialogsManager dialogsManager) {
+		this.dialogsManager = dialogsManager;
+	}
 }

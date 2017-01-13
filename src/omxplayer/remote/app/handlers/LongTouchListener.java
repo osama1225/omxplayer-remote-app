@@ -1,6 +1,5 @@
 package omxplayer.remote.app.handlers;
 
-import omxplayer.remote.app.network.WifiConnection;
 
 import omxplayer.remote.app.R;
 import android.app.Activity;
@@ -20,16 +19,11 @@ public class LongTouchListener implements OnTouchListener {
 	private final int LONG_TOUCH_DURATION = 1000;
 
 	private final Handler handler;
-	private WifiConnection wifiConnection;
-	private Activity context;
 	private OnClickListener listener;
 	private long beforePress;
 
-	public LongTouchListener(WifiConnection wifiConnection,
-			final Activity context, final OnClickListener listener) {
-		this.context = context;
+	public LongTouchListener(final Activity context, final OnClickListener listener) {
 		this.listener = listener;
-		this.wifiConnection = wifiConnection;
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {

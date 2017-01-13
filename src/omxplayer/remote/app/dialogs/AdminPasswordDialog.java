@@ -16,13 +16,13 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class PasswordDialog extends Dialog {
+public class AdminPasswordDialog extends Dialog {
 
 	private Context context;
 	private WifiConnection wifiConnection;
 	private EditText passwordEditText;
 
-	public PasswordDialog(Context context, WifiConnection wifiConnection) {
+	public AdminPasswordDialog(Context context, WifiConnection wifiConnection) {
 		super(context);
 		this.context = context;
 		this.wifiConnection = wifiConnection;

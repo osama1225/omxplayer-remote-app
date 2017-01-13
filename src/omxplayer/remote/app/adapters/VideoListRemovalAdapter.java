@@ -1,6 +1,7 @@
 package omxplayer.remote.app.adapters;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import omxplayer.remote.app.R;
 import android.content.Context;
@@ -10,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class VideoListRemovalAdapter extends CustomAdapter {
+public class VideoListRemovalAdapter extends CustomAdapter<String> {
 
 	private ArrayList<String> names;
 	private Context c;
@@ -18,7 +19,7 @@ public class VideoListRemovalAdapter extends CustomAdapter {
 
 	public VideoListRemovalAdapter(String[] names, Context c) {
 		this.names = new ArrayList<String>();
-		for (int i=0;i<names.length-1; i++) {
+		for (int i = 0; i < names.length - 1; i++) {
 			String name = names[i];
 			if (name.startsWith("@#%", 0))
 				continue;
@@ -48,7 +49,7 @@ public class VideoListRemovalAdapter extends CustomAdapter {
 		this.selectedIndex = selectedIndex;
 		notifyDataSetChanged();
 	}
-	
+
 	public int getSelectedIndex() {
 		return selectedIndex;
 	}
@@ -59,7 +60,8 @@ public class VideoListRemovalAdapter extends CustomAdapter {
 		View view = LayoutInflater.from(c).inflate(
 				R.layout.video_item_view_remove2, null);
 		String name = names.get(position).substring(
-				names.get(position).lastIndexOf("/") + 1, names.get(position).length());
+				names.get(position).lastIndexOf("/") + 1,
+				names.get(position).length());
 		((TextView) view.findViewById(R.id.name_id3)).setText(name);
 
 		ImageView cover = ((ImageView) view.findViewById(R.id.cover_img3));
@@ -73,6 +75,14 @@ public class VideoListRemovalAdapter extends CustomAdapter {
 					.setVisibility(ImageView.INVISIBLE);
 
 		return view;
+	}
+
+	@Override
+	public void setItems(List<String> items) {
+		if (items != null) {
+			names.clear();
+			names.addAll(items);
+		}
 	}
 
 }

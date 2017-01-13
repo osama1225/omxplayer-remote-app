@@ -2,9 +2,9 @@ package omxplayer.remote.app.adapters;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import omxplayer.remote.app.VideoItem;
-
 import omxplayer.remote.app.R;
 import android.content.Context;
 import android.database.Cursor;
@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class StoredVideoListAdapter extends CustomAdapter {
+public class StoredVideoListAdapter extends CustomAdapter<VideoItem> {
 
 	private ArrayList<VideoItem> videos;
 	private Context c;
@@ -142,5 +142,14 @@ public class StoredVideoListAdapter extends CustomAdapter {
 					.setVisibility(ImageView.INVISIBLE);
 
 		return view;
+	}
+
+	@Override
+	public void setItems(List<VideoItem> items) {
+		if(items != null){
+			videos.clear();
+			videos.addAll(items);
+		}
+		
 	}
 }

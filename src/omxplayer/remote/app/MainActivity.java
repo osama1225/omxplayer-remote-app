@@ -1,14 +1,8 @@
 package omxplayer.remote.app;
 
-import omxplayer.remote.app.adapters.CustomAdapter;
 import omxplayer.remote.app.adapters.PagerAdapter;
-import omxplayer.remote.app.adapters.StoredVideoListAdapter;
-import omxplayer.remote.app.adapters.VideoListRemovalAdapter;
 import omxplayer.remote.app.controls.PlayerControllers;
-import omxplayer.remote.app.dialogs.CustomDialog;
-import omxplayer.remote.app.dialogs.PasswordDialog;
-import omxplayer.remote.app.dialogs.StoredVideoListDialog;
-import omxplayer.remote.app.dialogs.VideoListRemovalDialog;
+import omxplayer.remote.app.dialogs.DialogsManager;
 import omxplayer.remote.app.handlers.ConnectionServiceHandler;
 import omxplayer.remote.app.handlers.LongTouchListener;
 import omxplayer.remote.app.network.SSHClient;
@@ -18,13 +12,8 @@ import omxplayer.remote.app.tasks.FileSender;
 import omxplayer.remote.app.utils.Sound;
 import omxplayer.remote.app.utils.Utils;
 import omxplayer.remote.app.R;
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -33,10 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -63,9 +49,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	private ConnectionServiceHandler connectionHandler;
 
-	private CustomDialog storedVideoListDialog;
-	private CustomDialog videoListRemovalDialog;
-	private Dialog passwordDialog;
+	private DialogsManager dialogsManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +75,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		initiateConnectionHandler();
 
 		wifiConnection = new WifiConnection(this, connectionHandler);
-		longTouchListener = new LongTouchListener(wifiConnection, this, this);
+		longTouchListener = new LongTouchListener(this, this);
+
+		dialogsManager = new DialogsManager(MainActivity.this,
+				getWifiConnection(), sound);
+		wifiConnection.setDialogsManager(dialogsManager);
 
 		pager = (ViewPager) findViewById(R.id.pager);
 		adapter = new PagerAdapter(getSupportFragmentManager(), wifiConnection,
@@ -206,11 +194,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			cmd = Utils.decVolCmd;
 			break;
 		case R.id.connect_btn:
-			wifiConnection.showScanDialog();
+			dialogsManager.showScanDialog();
 			break;
 		case R.id.movies_btn:
 			if (progressBar.getVisibility() != View.VISIBLE)
-				showOptionsDialog();
+				dialogsManager.prepareAndShowOptionsDialog();
 			// wifiConn.joinDisplayToNetwork("LINKDSL-jana", "osamaP@ssw0rd");
 			return;
 
@@ -226,84 +214,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		if (!cmd.equals("")) {
 			sendControlMessage(cmd);
 		}
-	}
-
-	private void prepareAndShowVideoListDialog() {
-		class processing extends AsyncTask<Void, Void, Void> {
-			private CustomAdapter storedVideoListAdapter;
-
-			@Override
-			protected void onPreExecute() {
-				super.onPreExecute();
-				progressBar.setVisibility(View.VISIBLE);
-			}
-
-			@Override
-			protected Void doInBackground(Void... params) {
-				if (Looper.myLooper() == null)
-					Looper.prepare();
-				storedVideoListAdapter = new StoredVideoListAdapter(
-						MainActivity.this);
-				if (Looper.myLooper() != null)
-					Looper.myLooper().quit();
-				return null;
-			}
-
-			@Override
-			protected void onPostExecute(Void result) {
-				super.onPostExecute(result);
-				if (storedVideoListDialog == null) {
-					storedVideoListDialog = new StoredVideoListDialog(
-							MainActivity.this, getWifiConnection(), sound);
-				}
-				progressBar.setVisibility(View.INVISIBLE);
-				storedVideoListDialog.prepareAndShow(storedVideoListAdapter);
-			}
-
-		}
-		new processing().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-				new Void[] {});
-
-	}
-
-	private void prepareAndShowVidoeListRemovalDialog() {
-		class processing extends AsyncTask<Void, Void, Void> {
-			private CustomAdapter videoListRemovalAdapter;
-
-			@Override
-			protected void onPreExecute() {
-				super.onPreExecute();
-				progressBar.setVisibility(View.VISIBLE);
-			}
-
-			@Override
-			protected Void doInBackground(Void... params) {
-				if (Looper.myLooper() == null)
-					Looper.prepare();
-				String response = wifiConnection
-						.send(Utils.retrieveplaylistCmd);
-				String[] videoNames = response.split("\n");
-				videoListRemovalAdapter = new VideoListRemovalAdapter(
-						videoNames, MainActivity.this);
-				if (Looper.myLooper() != null)
-					Looper.myLooper().quit();
-				return null;
-			}
-
-			@Override
-			protected void onPostExecute(Void result) {
-				super.onPostExecute(result);
-				if (videoListRemovalDialog == null) {
-					videoListRemovalDialog = new VideoListRemovalDialog(
-							MainActivity.this, getWifiConnection());
-				}
-				progressBar.setVisibility(ProgressBar.INVISIBLE);
-				videoListRemovalDialog.prepareAndShow(videoListRemovalAdapter);
-			}
-
-		}
-		new processing().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-				new Void[] {});
 	}
 
 	/**
@@ -411,63 +321,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				});
 			}
 		};
-	}
-
-	public void showOptionsDialog() {
-		final Dialog dialog = new Dialog(this);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setContentView(R.layout.options_dialog_2);
-		final Window window = dialog.getWindow();
-		window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.WRAP_CONTENT);
-		window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-		window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-		dialog.findViewById(R.id.send_media_id).setOnClickListener(
-				new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						prepareAndShowVideoListDialog();
-						dialog.dismiss();
-					}
-				});
-
-		dialog.findViewById(R.id.remove_media_id).setOnClickListener(
-				new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						dialog.dismiss();
-						if (!Utils.connected) {
-							Toast.makeText(MainActivity.this, "Not conected",
-									Toast.LENGTH_SHORT).show();
-							return;
-						}
-						prepareAndShowVidoeListRemovalDialog();
-					}
-				});
-
-		dialog.findViewById(R.id.close_media_id).setOnClickListener(
-				new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						showPasswordDialog();
-						dialog.dismiss();
-
-					}
-				});
-
-		dialog.show();
-	}
-
-	private void showPasswordDialog() {
-		if (passwordDialog == null) {
-			passwordDialog = new PasswordDialog(MainActivity.this,
-					getWifiConnection());
-		}
-		passwordDialog.show();
 	}
 
 	/*

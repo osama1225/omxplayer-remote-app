@@ -15,7 +15,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class VideoListRemovalDialog extends CustomDialog {
+public class VideoListRemovalDialog extends CustomDialog<String> {
 
 	private Context context;
 	private WifiConnection wifiConnection;
@@ -58,7 +58,7 @@ public class VideoListRemovalDialog extends CustomDialog {
 				});
 	}
 
-	private void prepareDialog(final CustomAdapter videoListRemovalAdapter) {
+	private void prepareDialog(final CustomAdapter<String> videoListRemovalAdapter) {
 		videoNameToRemove = "";
 		gridView.setAdapter(videoListRemovalAdapter);
 		gridView.setOnItemClickListener(new OnItemClickListener() {
@@ -74,7 +74,7 @@ public class VideoListRemovalDialog extends CustomDialog {
 	}
 
 	@Override
-	public void prepareAndShow(CustomAdapter adapter) {
+	public void prepareAndShow(CustomAdapter<String> adapter) {
 		prepareDialog(adapter);
 		show();
 	}
