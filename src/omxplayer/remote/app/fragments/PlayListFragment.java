@@ -59,20 +59,31 @@ public class PlayListFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		rootView = (ViewGroup) inflater.inflate(
+		if(rootView == null){
+			rootView = (ViewGroup) inflater.inflate(
 				R.layout.videos_playlist_screen, container, false);
+			lv = (ListView)  rootView.findViewById(R.id.listView2);
+			rootView.setTag(lv);
+		}else{
+			lv = (ListView) rootView.getTag();
+		}
 		rootView.bringToFront();
-		lv = (ListView) rootView.findViewById(R.id.listView2);
 		lv.bringToFront();
 		lv.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				String selectedName = adapter.getNames().get(arg2);
+				final String selectedName = adapter.getNames().get(arg2);
 				adapter.setCurrentlyPlaying(selectedName);
-				wifiConn.send(Utils.selectVideoCmd,selectedName);
-				connectionServiceHandler.changePlayState("p");
+				getActivity().runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						wifiConn.send(Utils.selectVideoCmd,selectedName);
+						connectionServiceHandler.changePlayState("p");
+					}
+				});
 			}
 		});
 		return rootView;

@@ -82,6 +82,8 @@ public class PlayListAdapter extends BaseAdapter {
 		textView.setText(name);
 		if (!names.get(arg0).equals(currentlyPlaying)){
 			textView.setAlpha(.6f);
+		}else{
+			textView.setAlpha(1f);
 		}
 		return convertView;
 	}
