@@ -27,8 +27,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-public class WifiConnection {
+/**
+ * To be re-designed/written from scratch!!
+ * @author Mohamed
+ *
+ */
+public class WifiConnection implements CommandSender{
 
 	private Activity context;
 	private ConnectionServiceHandler connectionServiceHandler;
@@ -86,14 +90,15 @@ public class WifiConnection {
 
 		savedNetworks = readSavedNetworks();
 		if (savedNetworks != null) {
-			if (!savedNetworks.containsKey(Utils.SSID))
+			if (!savedNetworks.containsKey(Utils.SSID)){
 				dialogsManager.showNetworkPasswordDialog();
-			else {
+			} else {
 				Utils.PSK = savedNetworks.get(Utils.SSID);
 				joinWifiNetwork(true);
 			}
-		} else
+		} else {
 			dialogsManager.showNetworkPasswordDialog();
+		}
 	}
 
 	/*
@@ -191,6 +196,7 @@ public class WifiConnection {
 			connectedFromApp = true;
 	}
 
+	@Override
 	public String send(String cmd, String... optionalParams) {
 		if (discovery != null && discovery.getSSH() != null)
 			return discovery.getSSH().executeCmd(cmd, optionalParams);

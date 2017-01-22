@@ -25,7 +25,7 @@ public class DialogsManager {
 		storedVideoListDialog = new StoredVideoListDialog(context, wifiConnection, sound);
 		videoListRemovalDialog = new VideoListRemovalDialog(context, wifiConnection);
 		adminPasswordDialog = new AdminPasswordDialog(context, wifiConnection);
-		optionsDialog = new OptionsDialog(context, wifiConnection, sound, this);
+		optionsDialog = new OptionsDialog(context, sound, this);
 		scanDialog = new ScanDialog(context, wifiConnection);
 		networkPasswordDialog = new NetworkPasswordDialog(context,
 				wifiConnection);

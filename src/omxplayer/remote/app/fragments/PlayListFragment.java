@@ -3,9 +3,8 @@ package omxplayer.remote.app.fragments;
 import omxplayer.remote.app.MainActivity;
 import omxplayer.remote.app.adapters.PlayListAdapter;
 import omxplayer.remote.app.handlers.ConnectionServiceHandler;
-import omxplayer.remote.app.network.WifiConnection;
+import omxplayer.remote.app.network.CommandSender;
 import omxplayer.remote.app.utils.Utils;
-
 import omxplayer.remote.app.R;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +20,7 @@ import android.widget.Toast;
 
 public class PlayListFragment extends Fragment {
 
-	private WifiConnection wifiConn;
+	private CommandSender commandSender;
 	private ConnectionServiceHandler connectionServiceHandler;
 	private ViewGroup rootView;
 	private ListView lv;
@@ -31,8 +30,8 @@ public class PlayListFragment extends Fragment {
 	private Runnable checkFileLog;
 	private final long checkInterval = 2000;
 
-	public PlayListFragment(WifiConnection wifiConn, ConnectionServiceHandler connectionServiceHandler) {
-		this.wifiConn = wifiConn;
+	public PlayListFragment(CommandSender commandSender, ConnectionServiceHandler connectionServiceHandler) {
+		this.commandSender = commandSender;
 		this.connectionServiceHandler = connectionServiceHandler;
 	}
 
@@ -46,7 +45,7 @@ public class PlayListFragment extends Fragment {
 			public void run() {
 				if (!Utils.connected)
 					return;
-				String response = wifiConn.send(Utils.retrieveplaylistCmd);
+				String response = commandSender.send(Utils.retrieveplaylistCmd);
 				String[] videoNames = response.split("\n");
 				adapter.updateList(videoNames);
 				timerHandler.postDelayed(checkFileLog, checkInterval);
@@ -80,7 +79,7 @@ public class PlayListFragment extends Fragment {
 					
 					@Override
 					public void run() {
-						wifiConn.send(Utils.selectVideoCmd,selectedName);
+						commandSender.send(Utils.selectVideoCmd,selectedName);
 						connectionServiceHandler.changePlayState("p");
 					}
 				});
@@ -98,7 +97,7 @@ public class PlayListFragment extends Fragment {
 						Toast.LENGTH_SHORT).show();
 			} else {
 				MainActivity.progressBar.setVisibility(ProgressBar.VISIBLE);
-				String response = wifiConn.send(Utils.retrieveplaylistCmd);
+				String response = commandSender.send(Utils.retrieveplaylistCmd);
 				String[] videoNames = null;
 				if (!response.equals("")) {
 					videoNames = response.split("\n");

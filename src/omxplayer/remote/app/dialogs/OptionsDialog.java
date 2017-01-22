@@ -1,7 +1,6 @@
 package omxplayer.remote.app.dialogs;
 
 import omxplayer.remote.app.R;
-import omxplayer.remote.app.network.WifiConnection;
 import omxplayer.remote.app.utils.Sound;
 import omxplayer.remote.app.utils.Utils;
 import android.app.Dialog;
@@ -18,7 +17,7 @@ public class OptionsDialog extends Dialog {
 	private Context context;
 	private DialogsManager dialogsManager;
 
-	public OptionsDialog(Context context, WifiConnection wifiConnection,
+	public OptionsDialog(Context context,
 			Sound sound, DialogsManager dialogsManager) {
 		super(context);
 		this.context = context;

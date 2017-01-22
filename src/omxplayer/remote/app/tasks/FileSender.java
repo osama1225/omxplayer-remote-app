@@ -8,10 +8,9 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import omxplayer.remote.app.VideoSentListener;
-import omxplayer.remote.app.network.WifiConnection;
+import omxplayer.remote.app.network.CommandSender;
 import omxplayer.remote.app.utils.Sound;
 import omxplayer.remote.app.utils.Utils;
-
 import omxplayer.remote.app.R;
 import android.app.Dialog;
 import android.content.Context;
@@ -42,7 +41,7 @@ public class FileSender extends AsyncTask<Void, Integer, String> {
 	private ProgressBar bar;
 	private TextView percentage;
 	private VideoSentListener finishedListener;
-	private WifiConnection conn;
+	private CommandSender commandSender;
 	private boolean canceled;
 	private File f;
 	private Sound sound;
@@ -51,12 +50,12 @@ public class FileSender extends AsyncTask<Void, Integer, String> {
 		this.sound = sound;
 	}
 
-	public void exec(Context c, String fileName, WifiConnection conn) {
+	public void exec(Context c, String fileName, CommandSender commandSender) {
 		try {
 			f = new File(fileName);
 			fis = new FileInputStream(f);
 			this.c = c;
-			this.conn = conn;
+			this.commandSender = commandSender;
 			canceled = false;
 		} catch (Exception e) {
 			closeStreams();
@@ -121,7 +120,7 @@ public class FileSender extends AsyncTask<Void, Integer, String> {
 		super.onPostExecute(result);
 		if (result.equals("error")) {
 			// remove the partially created there
-			conn.send(Utils.removeCmd, f.getName());
+			commandSender.send(Utils.removeCmd, f.getName());
 			if (sound != null) {
 				Toast.makeText(c, "Not Sent!", Toast.LENGTH_LONG).show();
 				sound.play(c, R.raw.fail);

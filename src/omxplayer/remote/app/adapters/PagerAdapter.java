@@ -3,7 +3,7 @@ package omxplayer.remote.app.adapters;
 import omxplayer.remote.app.fragments.PlayListFragment;
 import omxplayer.remote.app.fragments.TransparentFragment;
 import omxplayer.remote.app.handlers.ConnectionServiceHandler;
-import omxplayer.remote.app.network.WifiConnection;
+import omxplayer.remote.app.network.CommandSender;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
@@ -14,10 +14,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
 	private final int NUM_PAGES = 2;
 
-	public PagerAdapter(FragmentManager fm, WifiConnection wc, ConnectionServiceHandler connectionServiceHandler) {
+	public PagerAdapter(FragmentManager fm, CommandSender commandSender, ConnectionServiceHandler connectionServiceHandler) {
 		super(fm);
 		transparentFragment = new TransparentFragment();
-		playListFragment = new PlayListFragment(wc,connectionServiceHandler);
+		playListFragment = new PlayListFragment(commandSender,connectionServiceHandler);
 	}
 
 	@Override

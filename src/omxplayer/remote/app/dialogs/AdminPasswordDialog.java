@@ -1,10 +1,8 @@
 package omxplayer.remote.app.dialogs;
 
-import omxplayer.remote.app.network.WifiConnection;
+import omxplayer.remote.app.network.CommandSender;
 import omxplayer.remote.app.utils.Utils;
-
 import omxplayer.remote.app.R;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -19,13 +17,13 @@ import android.widget.Toast;
 public class AdminPasswordDialog extends Dialog {
 
 	private Context context;
-	private WifiConnection wifiConnection;
+	private CommandSender commandSender;
 	private EditText passwordEditText;
 
-	public AdminPasswordDialog(Context context, WifiConnection wifiConnection) {
+	public AdminPasswordDialog(Context context, CommandSender commandSender) {
 		super(context);
 		this.context = context;
-		this.wifiConnection = wifiConnection;
+		this.commandSender = commandSender;
 		setupDialog();
 	}
 
@@ -53,7 +51,7 @@ public class AdminPasswordDialog extends Dialog {
 								Toast.LENGTH_SHORT).show();
 						return;
 					}
-					wifiConnection.send(Utils.shutdownHostCmd);
+					commandSender.send(Utils.shutdownHostCmd);
 				}
 
 			}
