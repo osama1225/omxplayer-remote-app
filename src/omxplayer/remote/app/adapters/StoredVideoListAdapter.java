@@ -23,13 +23,13 @@ public class StoredVideoListAdapter extends CustomAdapter<VideoItem> {
 
 	private ArrayList<VideoItem> videos;
 	private Context c;
-	private int selectedIndex;
+	private List<Integer> selectedIndecies;
 
 	public StoredVideoListAdapter(Context c) {
 		this.c = c;
 		videos = new ArrayList<VideoItem>();
-		selectedIndex = -1;
 		retrieveVideos();
+		selectedIndecies = new ArrayList<Integer>(videos.size());
 	}
 
 	private void retrieveVideos() {
@@ -81,8 +81,12 @@ public class StoredVideoListAdapter extends CustomAdapter<VideoItem> {
 	}
 
 	@Override
-	public void setSelectedIndex(int selectedIndex) {
-		this.selectedIndex = selectedIndex;
+	public void toggleFromSelectedIndecies(int selectedIndex) {
+		if(selectedIndecies.contains(selectedIndex)){
+			selectedIndecies.remove(Integer.valueOf(selectedIndex));
+		}else{
+			selectedIndecies.add(selectedIndex);
+		}
 		notifyDataSetChanged();
 	}
 	
@@ -105,7 +109,6 @@ public class StoredVideoListAdapter extends CustomAdapter<VideoItem> {
 		return position;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -146,11 +149,12 @@ public class StoredVideoListAdapter extends CustomAdapter<VideoItem> {
 		ImageView thumbnailImageView = viewHolder.getThumbnailImageView();
 		thumbnailImageView.setImageBitmap(videos.get(position).getVideoImage());
 
-		if (selectedIndex != -1 && selectedIndex == position) {
+		if (selectedIndecies != null && selectedIndecies.contains(position)) {
 			viewHolder.getSelectedMarkImageView().setVisibility(ImageView.VISIBLE);
-			thumbnailImageView.setAlpha(150);
+			thumbnailImageView.setAlpha(0.5f);
 		} else{
 			viewHolder.getSelectedMarkImageView().setVisibility(ImageView.INVISIBLE);
+			thumbnailImageView.setAlpha(1.0f);
 		}
 
 		return convertView;
@@ -162,5 +166,11 @@ public class StoredVideoListAdapter extends CustomAdapter<VideoItem> {
 			videos.clear();
 			videos.addAll(items);
 		}
+	}
+
+	@Override
+	public List<Integer> getSelectedIndecies() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

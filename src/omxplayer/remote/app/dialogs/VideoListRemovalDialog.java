@@ -1,8 +1,11 @@
 package omxplayer.remote.app.dialogs;
 
+import java.util.List;
+
 import omxplayer.remote.app.R;
 import omxplayer.remote.app.adapters.CustomAdapter;
-import omxplayer.remote.app.network.WifiConnection;
+import omxplayer.remote.app.adapters.VideoListRemovalAdapter;
+import omxplayer.remote.app.network.CommandSender;
 import omxplayer.remote.app.utils.Utils;
 import android.content.Context;
 import android.graphics.Color;
@@ -18,15 +21,13 @@ import android.widget.AdapterView.OnItemClickListener;
 public class VideoListRemovalDialog extends CustomDialog<String> {
 
 	private Context context;
-	private WifiConnection wifiConnection;
-	private String videoNameToRemove;
+	private CommandSender commandSender;
 	private GridView gridView;
 
-	public VideoListRemovalDialog(Context context, WifiConnection wifiConnection) {
+	public VideoListRemovalDialog(Context context, CommandSender commandSender) {
 		super(context);
 		this.context = context;
-		this.wifiConnection = wifiConnection;
-		videoNameToRemove = "";
+		this.commandSender = commandSender;
 		gridView = null;
 		setupDialog();
 	}
@@ -46,29 +47,29 @@ public class VideoListRemovalDialog extends CustomDialog<String> {
 
 					@Override
 					public void onClick(View v) {
-						if (!videoNameToRemove.equals("")) {
+						CustomAdapter<String> adapter = (VideoListRemovalAdapter) gridView
+								.getAdapter();
+						String[] videoNamesToRemove = getVideoNamesToRemove(adapter);
+						if (videoNamesToRemove != null && videoNamesToRemove.length > 0) {
 							dismiss();
-							wifiConnection.send(Utils.removeCmd,
-									videoNameToRemove);
+							commandSender.send(Utils.removeCmd,
+									videoNamesToRemove);
 							Toast.makeText(context, "Successfully Removed!",
 									Toast.LENGTH_SHORT).show();
-							videoNameToRemove = "";
 						}
 					}
 				});
 	}
 
-	private void prepareDialog(final CustomAdapter<String> videoListRemovalAdapter) {
-		videoNameToRemove = "";
+	private void prepareDialog(
+			final CustomAdapter<String> videoListRemovalAdapter) {
 		gridView.setAdapter(videoListRemovalAdapter);
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				videoNameToRemove = (String) videoListRemovalAdapter
-						.getItem(arg2);
-				videoListRemovalAdapter.setSelectedIndex(arg2);
+				videoListRemovalAdapter.toggleFromSelectedIndecies(arg2);
 			}
 		});
 	}
@@ -77,5 +78,19 @@ public class VideoListRemovalDialog extends CustomDialog<String> {
 	public void prepareAndShow(CustomAdapter<String> adapter) {
 		prepareDialog(adapter);
 		show();
+	}
+
+	private String[] getVideoNamesToRemove(CustomAdapter<String> adapter) {
+		List<Integer> selectedVideoIndecies = adapter.getSelectedIndecies();
+		String[] videoNamesToRemove = null;
+		if (!selectedVideoIndecies.isEmpty()) {
+			videoNamesToRemove = new String[selectedVideoIndecies.size()];
+			int resultIndex = 0;
+			for (int index : selectedVideoIndecies) {
+				videoNamesToRemove[resultIndex++] = (String) adapter
+						.getItem(index);
+			}
+		}
+		return videoNamesToRemove;
 	}
 }

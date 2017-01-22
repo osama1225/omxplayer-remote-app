@@ -16,7 +16,7 @@ public class VideoListRemovalAdapter extends CustomAdapter<String> {
 
 	private ArrayList<String> names;
 	private Context c;
-	private int selectedIndex;
+	private List<Integer> selectedIndecies;
 
 	public VideoListRemovalAdapter(String[] names, Context c) {
 		this.names = new ArrayList<String>();
@@ -27,7 +27,7 @@ public class VideoListRemovalAdapter extends CustomAdapter<String> {
 			this.names.add(name);
 		}
 		this.c = c;
-		selectedIndex = -1;
+		selectedIndecies = new ArrayList<Integer>(this.names.size());
 	}
 
 	@Override
@@ -46,26 +46,33 @@ public class VideoListRemovalAdapter extends CustomAdapter<String> {
 	}
 
 	@Override
-	public void setSelectedIndex(int selectedIndex) {
-		this.selectedIndex = selectedIndex;
+	public void toggleFromSelectedIndecies(int selectedIndex) {
+		if (selectedIndecies.contains(selectedIndex)) {
+			selectedIndecies.remove(Integer.valueOf(selectedIndex));
+		} else {
+			selectedIndecies.add(selectedIndex);
+		}
 		notifyDataSetChanged();
 	}
 
-	public int getSelectedIndex() {
-		return selectedIndex;
+	@Override
+	public List<Integer> getSelectedIndecies() {
+		return selectedIndecies;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		RemoveMediaViewHolder viewHolder;
-		if(convertView == null){
+		if (convertView == null) {
 			convertView = LayoutInflater.from(c).inflate(
 					R.layout.video_item_view_remove, null);
 			viewHolder = new RemoveMediaViewHolder();
-			viewHolder.setNameTextView((TextView) convertView.findViewById(R.id.name_id3));
-			viewHolder.setThumbnailImageView((ImageView) convertView.findViewById(R.id.cover_img3));
-			viewHolder.setSelectedMarkImageView((ImageView) convertView.findViewById(R.id.selected_img_id3));
+			viewHolder.setNameTextView((TextView) convertView
+					.findViewById(R.id.name_id3));
+			viewHolder.setThumbnailImageView((ImageView) convertView
+					.findViewById(R.id.cover_img3));
+			viewHolder.setSelectedMarkImageView((ImageView) convertView
+					.findViewById(R.id.selected_img_id3));
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (RemoveMediaViewHolder) convertView.getTag();
@@ -77,11 +84,14 @@ public class VideoListRemovalAdapter extends CustomAdapter<String> {
 
 		ImageView thumbnailImageView = viewHolder.getThumbnailImageView();
 
-		if (selectedIndex != -1 && selectedIndex == position) {
-			viewHolder.getSelectedMarkImageView().setVisibility(ImageView.VISIBLE);
-			thumbnailImageView.setAlpha(150);
-		} else{
-			viewHolder.getSelectedMarkImageView().setVisibility(ImageView.INVISIBLE);
+		if (selectedIndecies != null && selectedIndecies.contains(position)) {
+			viewHolder.getSelectedMarkImageView().setVisibility(
+					ImageView.VISIBLE);
+			thumbnailImageView.setAlpha(.5f);
+		} else {
+			viewHolder.getSelectedMarkImageView().setVisibility(
+					ImageView.INVISIBLE);
+			thumbnailImageView.setAlpha(1.0f);
 		}
 
 		return convertView;

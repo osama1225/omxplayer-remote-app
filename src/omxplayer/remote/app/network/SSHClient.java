@@ -53,11 +53,18 @@ public class SSHClient extends AsyncTask<Void, Void, Void> {
 	}
 
 	public String executeCmd(String cmd, String... additionalParams) {
-		String finalCommand = cmd;
-		if(additionalParams != null && additionalParams.length > 0){
-			finalCommand = cmd + "\"" + additionalParams[0] + "\"";
-		}
+		String finalCommand = cmd + prepareCommandParameters(additionalParams);
 		return executeCmd(finalCommand);
+	}
+	
+	private String prepareCommandParameters(String... params){
+		StringBuilder preparedParams = new StringBuilder();
+		if(params != null && params.length > 0){
+			for (String string : params) {
+				preparedParams.append("\"" + string + "\" ");
+			}
+		}
+		return preparedParams.toString();
 	}
 
 	private synchronized String executeCmd(String cmd) {

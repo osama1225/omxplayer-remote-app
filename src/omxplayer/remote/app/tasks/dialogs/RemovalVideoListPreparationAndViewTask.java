@@ -4,7 +4,7 @@ import omxplayer.remote.app.MainActivity;
 import omxplayer.remote.app.adapters.CustomAdapter;
 import omxplayer.remote.app.adapters.VideoListRemovalAdapter;
 import omxplayer.remote.app.dialogs.CustomDialog;
-import omxplayer.remote.app.network.WifiConnection;
+import omxplayer.remote.app.network.CommandSender;
 import omxplayer.remote.app.utils.Utils;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -15,14 +15,14 @@ import android.widget.ProgressBar;
 public class RemovalVideoListPreparationAndViewTask extends
 		AsyncTask<Void, Void, Void> {
 
-	private WifiConnection wifiConnection;
+	private CommandSender commandSender;
 	private CustomAdapter<String> videoListRemovalAdapter;
 	private Context context;
 	private CustomDialog<String> videoListRemovalDialog;
 
 	public RemovalVideoListPreparationAndViewTask(Context context,
-			WifiConnection wifiConnection, CustomDialog<String> videoListRemovalDialog) {
-		this.wifiConnection = wifiConnection;
+			CommandSender commandSender, CustomDialog<String> videoListRemovalDialog) {
+		this.commandSender = commandSender;
 		this.context = context;
 		this.videoListRemovalDialog = videoListRemovalDialog;
 	}
@@ -37,7 +37,7 @@ public class RemovalVideoListPreparationAndViewTask extends
 	protected Void doInBackground(Void... params) {
 		if (Looper.myLooper() == null)
 			Looper.prepare();
-		String response = wifiConnection.send(Utils.retrieveplaylistCmd);
+		String response = commandSender.send(Utils.retrieveplaylistCmd);
 		String[] videoNames = response.split("\n");
 		videoListRemovalAdapter = new VideoListRemovalAdapter(videoNames,
 				context);

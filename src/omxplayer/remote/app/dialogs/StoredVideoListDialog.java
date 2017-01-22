@@ -4,7 +4,7 @@ import omxplayer.remote.app.R;
 import omxplayer.remote.app.VideoItem;
 import omxplayer.remote.app.VideoSentListener;
 import omxplayer.remote.app.adapters.CustomAdapter;
-import omxplayer.remote.app.network.WifiConnection;
+import omxplayer.remote.app.network.CommandSender;
 import omxplayer.remote.app.tasks.FileSender;
 import omxplayer.remote.app.utils.Sound;
 import omxplayer.remote.app.utils.Utils;
@@ -22,18 +22,18 @@ import android.widget.Toast;
 public class StoredVideoListDialog extends CustomDialog<VideoItem> {
 
 	private Context context;
+	private CommandSender commandSender;
 	private FileSender fileSender;
 	private Sound sound;
 	private GridView gridView;
-	private WifiConnection wifiConnection;
 	private VideoItem videoToSend;
 	private String recentSentVideoName;
 
 	public StoredVideoListDialog(Context context,
-			WifiConnection wifiConnection, Sound sound) {
+			CommandSender commandSender, Sound sound) {
 		super(context);
 		this.context = context;
-		this.wifiConnection = wifiConnection;
+		this.commandSender = commandSender;
 		this.sound = sound;
 		setupDialog();
 	}
@@ -69,7 +69,7 @@ public class StoredVideoListDialog extends CustomDialog<VideoItem> {
 												boolean finished) {
 											if (finished
 													&& !fileSender.isCanceled()) {
-												wifiConnection.send(
+												commandSender.send(
 														Utils.fileSentCmd,
 														recentSentVideoName);
 											}
@@ -77,7 +77,7 @@ public class StoredVideoListDialog extends CustomDialog<VideoItem> {
 									});
 
 							fileSender.exec(context, videoToSend.getPath(),
-									wifiConnection);
+									commandSender);
 							videoToSend = null;
 						}
 					}
@@ -96,7 +96,7 @@ public class StoredVideoListDialog extends CustomDialog<VideoItem> {
 					long arg3) {
 				videoToSend = (VideoItem) storedVideoListAdapter.getItem(arg2);
 				recentSentVideoName = new String(videoToSend.getName());
-				storedVideoListAdapter.setSelectedIndex(arg2);
+				storedVideoListAdapter.toggleFromSelectedIndecies(arg2);
 			}
 
 		});

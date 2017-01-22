@@ -40,7 +40,7 @@ public class NetworkScanAdapter extends CustomAdapter<ScanResult> {
 	}
 
 	@Override
-	public void setSelectedIndex(int index) {
+	public void toggleFromSelectedIndecies(int index) {
 	}
 
 	@Override
@@ -67,5 +67,11 @@ public class NetworkScanAdapter extends CustomAdapter<ScanResult> {
 			networks.addAll(items);
 		}
 
+	}
+
+	@Override
+	public List<Integer> getSelectedIndecies() {
+		// doesn't apply
+		return null;
 	}
 }
