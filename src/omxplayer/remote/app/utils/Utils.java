@@ -6,14 +6,12 @@ public class Utils {
 	public static final String uName = "pi";
 	public static String hostName = "Hologram.local";
 	public static final String password = "IDLabs2015";
-	public static final String videosDir = "Videos/";
+	public static final String videosDir = "/home/pi/Videos/";
 	public static final String adminPassword = "435227";
 
 	// for wifi connection
-
 	public static String SSID = "";
 	public static String PSK = "";
-
 	public static boolean connected = false;
 
 	// ssh commands
@@ -33,5 +31,8 @@ public class Utils {
 	public static final String fileLogCmd = "cat /tmp/filelog";
 	public static final String restartHostCmd = "sudo reboot";
 	public static final String shutdownHostCmd = "sudo shutdown -h now";
+	
+	// for sending videos state
+	public static enum SendStatus {SUCCESS, FAILED, CANCELED};
 
 }

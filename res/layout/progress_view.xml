@@ -21,14 +21,22 @@
     </ProgressBar>
 
     <TextView
-        android:id="@+id/percentage"
+        android:id="@+id/filesSentTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/bar_id"
+        android:layout_alignStart="@+id/bar_id"
         android:layout_below="@+id/bar_id"
-        
-        android:text=""
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/white" />
+
+	<TextView
+	    android:id="@+id/percentage"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_centerVertical="true"
+	    android:textAppearance="?android:attr/textAppearanceSmall"
+	    android:textColor="@color/Black" />
 
 </RelativeLayout>

@@ -4,10 +4,12 @@ import omxplayer.remote.app.R;
 import omxplayer.remote.app.VideoItem;
 import omxplayer.remote.app.VideoSentListener;
 import omxplayer.remote.app.adapters.CustomAdapter;
+import omxplayer.remote.app.adapters.StoredVideoListAdapter;
 import omxplayer.remote.app.network.CommandSender;
 import omxplayer.remote.app.tasks.FileSender;
 import omxplayer.remote.app.utils.Sound;
 import omxplayer.remote.app.utils.Utils;
+import omxplayer.remote.app.utils.Utils.SendStatus;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -26,11 +28,8 @@ public class StoredVideoListDialog extends CustomDialog<VideoItem> {
 	private FileSender fileSender;
 	private Sound sound;
 	private GridView gridView;
-	private VideoItem videoToSend;
-	private String recentSentVideoName;
 
-	public StoredVideoListDialog(Context context,
-			CommandSender commandSender, Sound sound) {
+	public StoredVideoListDialog(Context context, CommandSender commandSender, Sound sound) {
 		super(context);
 		this.context = context;
 		this.commandSender = commandSender;
@@ -49,7 +48,6 @@ public class StoredVideoListDialog extends CustomDialog<VideoItem> {
 		gridView = (GridView) findViewById(R.id.gridView1);
 		findViewById(R.id.done_btn).setOnClickListener(
 				new View.OnClickListener() {
-
 					@Override
 					public void onClick(View v) {
 						// actual sending
@@ -58,27 +56,35 @@ public class StoredVideoListDialog extends CustomDialog<VideoItem> {
 									Toast.LENGTH_SHORT).show();
 							return;
 						}
-						if (videoToSend != null) {
+						StoredVideoListAdapter adapter = (StoredVideoListAdapter) gridView.getAdapter();
+						VideoItem[] selectedVideoItems = adapter.getSelectedItems();
+						if (selectedVideoItems != null && selectedVideoItems.length > 0) {
 							dismiss();
-							fileSender = new FileSender(sound);
-							fileSender
-									.setFinishedListener(new VideoSentListener() {
-
-										@Override
-										public void finishedSending(
-												boolean finished) {
-											if (finished
-													&& !fileSender.isCanceled()) {
-												commandSender.send(
-														Utils.fileSentCmd,
-														recentSentVideoName);
-											}
+							fileSender = new FileSender();
+							fileSender.setFinishedListener(new VideoSentListener() {
+									@Override
+									public void finishedSending(
+											SendStatus state, String fileName) {
+										if (state.equals(SendStatus.SUCCESS)) {
+											commandSender.send(Utils.fileSentCmd, fileName);
+											Toast.makeText(context, "Successfully Sent!", Toast.LENGTH_LONG).show();
+											sound.play(context, R.raw.success);
+										} else if (state.equals(SendStatus.FAILED)) {
+											commandSender.send(Utils.removeCmd, fileName);
+											Toast.makeText(context, "Not Sent!", Toast.LENGTH_LONG).show();
+											sound.play(context, R.raw.fail);
+										} else {
+											commandSender.send(Utils.removeCmd, fileName);
 										}
-									});
-
-							fileSender.exec(context, videoToSend.getPath(),
-									commandSender);
-							videoToSend = null;
+									}
+								});
+							
+							String [] filePaths = new String[selectedVideoItems.length];
+							int index = 0;
+							for (VideoItem videoItem : selectedVideoItems) {
+								filePaths[index++] = videoItem.getPath();
+							}
+							fileSender.exec(context, filePaths);
 						}
 					}
 				});
@@ -86,16 +92,12 @@ public class StoredVideoListDialog extends CustomDialog<VideoItem> {
 
 	private void prepareDialog(final CustomAdapter<VideoItem> storedVideoListAdapter) {
 		fileSender = null;
-		recentSentVideoName = "";
-		videoToSend = null;
 		gridView.setAdapter(storedVideoListAdapter);
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int arg2,
 					long arg3) {
-				videoToSend = (VideoItem) storedVideoListAdapter.getItem(arg2);
-				recentSentVideoName = new String(videoToSend.getName());
 				storedVideoListAdapter.toggleFromSelectedIndecies(arg2);
 			}
 

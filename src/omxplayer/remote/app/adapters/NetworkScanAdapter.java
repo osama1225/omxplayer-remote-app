@@ -70,7 +70,7 @@ public class NetworkScanAdapter extends CustomAdapter<ScanResult> {
 	}
 
 	@Override
-	public List<Integer> getSelectedIndecies() {
+	public ScanResult[] getSelectedItems() {
 		// doesn't apply
 		return null;
 	}

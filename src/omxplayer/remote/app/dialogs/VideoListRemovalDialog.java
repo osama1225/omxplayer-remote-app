@@ -1,6 +1,5 @@
 package omxplayer.remote.app.dialogs;
 
-import java.util.List;
 
 import omxplayer.remote.app.R;
 import omxplayer.remote.app.adapters.CustomAdapter;
@@ -49,7 +48,7 @@ public class VideoListRemovalDialog extends CustomDialog<String> {
 					public void onClick(View v) {
 						CustomAdapter<String> adapter = (VideoListRemovalAdapter) gridView
 								.getAdapter();
-						String[] videoNamesToRemove = getVideoNamesToRemove(adapter);
+						String[] videoNamesToRemove = adapter.getSelectedItems();
 						if (videoNamesToRemove != null && videoNamesToRemove.length > 0) {
 							dismiss();
 							commandSender.send(Utils.removeCmd,
@@ -78,19 +77,5 @@ public class VideoListRemovalDialog extends CustomDialog<String> {
 	public void prepareAndShow(CustomAdapter<String> adapter) {
 		prepareDialog(adapter);
 		show();
-	}
-
-	private String[] getVideoNamesToRemove(CustomAdapter<String> adapter) {
-		List<Integer> selectedVideoIndecies = adapter.getSelectedIndecies();
-		String[] videoNamesToRemove = null;
-		if (!selectedVideoIndecies.isEmpty()) {
-			videoNamesToRemove = new String[selectedVideoIndecies.size()];
-			int resultIndex = 0;
-			for (int index : selectedVideoIndecies) {
-				videoNamesToRemove[resultIndex++] = (String) adapter
-						.getItem(index);
-			}
-		}
-		return videoNamesToRemove;
 	}
 }

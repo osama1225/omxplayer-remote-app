@@ -1,5 +1,6 @@
 package omxplayer.remote.app.adapters;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,13 +24,11 @@ public class StoredVideoListAdapter extends CustomAdapter<VideoItem> {
 
 	private ArrayList<VideoItem> videos;
 	private Context c;
-	private List<Integer> selectedIndecies;
 
 	public StoredVideoListAdapter(Context c) {
 		this.c = c;
 		videos = new ArrayList<VideoItem>();
 		retrieveVideos();
-		selectedIndecies = new ArrayList<Integer>(videos.size());
 	}
 
 	private void retrieveVideos() {
@@ -79,21 +78,7 @@ public class StoredVideoListAdapter extends CustomAdapter<VideoItem> {
 		Collections.sort(videos);
 
 	}
-
-	@Override
-	public void toggleFromSelectedIndecies(int selectedIndex) {
-		if(selectedIndecies.contains(selectedIndex)){
-			selectedIndecies.remove(Integer.valueOf(selectedIndex));
-		}else{
-			selectedIndecies.add(selectedIndex);
-		}
-		notifyDataSetChanged();
-	}
 	
-	public ArrayList<VideoItem> getVideos() {
-		return videos;
-	}
-
 	@Override
 	public int getCount() {
 		return videos.size();
@@ -169,8 +154,15 @@ public class StoredVideoListAdapter extends CustomAdapter<VideoItem> {
 	}
 
 	@Override
-	public List<Integer> getSelectedIndecies() {
-		// TODO Auto-generated method stub
-		return null;
+	public VideoItem[] getSelectedItems() {
+		VideoItem[] selectedItems = null;
+		if (!selectedIndecies.isEmpty()) {
+			selectedItems = new VideoItem[selectedIndecies.size()];
+			int resultIndex = 0;
+			for (int index : selectedIndecies) {
+				selectedItems[resultIndex++] =  (VideoItem) getItem(index);
+			}
+		}
+		return selectedItems;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import omxplayer.remote.app.R;
+import omxplayer.remote.app.VideoItem;
 import omxplayer.remote.app.adapters.viewholders.RemoveMediaViewHolder;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,7 +17,6 @@ public class VideoListRemovalAdapter extends CustomAdapter<String> {
 
 	private ArrayList<String> names;
 	private Context c;
-	private List<Integer> selectedIndecies;
 
 	public VideoListRemovalAdapter(String[] names, Context c) {
 		this.names = new ArrayList<String>();
@@ -43,21 +43,6 @@ public class VideoListRemovalAdapter extends CustomAdapter<String> {
 	@Override
 	public long getItemId(int position) {
 		return position;
-	}
-
-	@Override
-	public void toggleFromSelectedIndecies(int selectedIndex) {
-		if (selectedIndecies.contains(selectedIndex)) {
-			selectedIndecies.remove(Integer.valueOf(selectedIndex));
-		} else {
-			selectedIndecies.add(selectedIndex);
-		}
-		notifyDataSetChanged();
-	}
-
-	@Override
-	public List<Integer> getSelectedIndecies() {
-		return selectedIndecies;
 	}
 
 	@Override
@@ -105,4 +90,16 @@ public class VideoListRemovalAdapter extends CustomAdapter<String> {
 		}
 	}
 
+	@Override
+	public String[] getSelectedItems() {
+		String[] selectedItems = null;
+		if (!selectedIndecies.isEmpty()) {
+			selectedItems = new String[selectedIndecies.size()];
+			int resultIndex = 0;
+			for (int index : selectedIndecies) {
+				selectedItems[resultIndex++] =  (String) getItem(index);
+			}
+		}
+		return selectedItems;
+	}
 }
