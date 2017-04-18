@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import omxplayer.remote.app.R;
-import omxplayer.remote.app.VideoItem;
 import omxplayer.remote.app.adapters.viewholders.RemoveMediaViewHolder;
 import android.content.Context;
 import android.view.LayoutInflater;

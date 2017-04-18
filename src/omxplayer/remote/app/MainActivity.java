@@ -199,13 +199,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		case R.id.movies_btn:
 			if (progressBar.getVisibility() != View.VISIBLE)
 				dialogsManager.prepareAndShowOptionsDialog();
-			// wifiConn.joinDisplayToNetwork("LINKDSL-jana", "osamaP@ssw0rd");
 			return;
 
 		case R.id.src_changer_id:
-			// changeBgSrc();
-			wifiConnection
-					.joinDisplayToNetwork("LINKDSL-jana", "osamaP@ssw0rd");
+			changeBgSrc();
+//			wifiConnection
+//					.joinDisplayToNetwork("network-name", "network-pass");
 			break;
 		default:
 			cmd = "";
@@ -327,6 +326,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	 * Method that change the src of the bg either the bg image, or live stream
 	 * from the camera
 	 */
+	@SuppressWarnings("deprecation")
 	private void changeBgSrc() {
 		if (!useImageBg) {
 			/* for cam */
