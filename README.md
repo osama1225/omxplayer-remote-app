@@ -24,3 +24,4 @@ A jessie lite image is installed on raspberry pi 3 then the following customizat
 - The main script make a playlist of all videos found either in the pi files or in the attached usbs and start playing them using omxplayer.
 - Helper scripts are used to determine the player behavior based on the actions taken from the remote app.
 
+### NOTE: All Drawables(images) are provided by [IDLabs](http://id-labs.org/)
