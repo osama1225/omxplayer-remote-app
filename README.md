@@ -16,11 +16,11 @@ A jessie lite image is installed on raspberry pi 3 then the following customizat
 - Hiding the console log that appears on startup.
 - Auto login
 - Wifi configuration to make the pi acts as access point (make the pi create its own network)
-- Auto start of bash scripts on boot that resposnible for openning the video player.
+- Auto start of bash scripts on boot that resposnible for opening the video player.
 - Auto mount for attached usbs
 
 
 #### About the custom bash scripts:
 - The main script make a playlist of all videos found either in the pi files or in the attached usbs and start playing them using omxplayer.
-- Helper scripts are used to determine the player behavior based on the action taken from the remote app.
+- Helper scripts are used to determine the player behavior based on the actions taken from the remote app.
 
