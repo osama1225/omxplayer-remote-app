@@ -3,6 +3,7 @@ An Android app that connects to customized raspberry pi device via SSH and contr
 Its main features:
 - Connect to the wifi network that has the Pi device.
 - Play/Pause current video, next/previous video, and increase/decrease volume.
+- Fastforward/rewind for 30secs by long press
 - Show the Playlist and select a video to play.
 - Send videos from the app to the player.
 - Remove videos from the player (remove the actual video files from the pi).
