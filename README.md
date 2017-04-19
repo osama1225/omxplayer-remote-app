@@ -9,6 +9,8 @@ Its main features:
 - Show on screen notification for quick controls when the screen is off.
 - Close the Pi device.
 
+[screenshots](https://drive.google.com/open?id=0B17oSX7YuAWOfmhqQVNiOWxpWnVuQmVrNUtqSFhlQzhfRkRYVlpxaTMtXzAtcnVVQndKRXc)
+
 
 #### About the Customized Raspberry Pi image:
 A jessie lite image is installed on raspberry pi 3 then the following customizations are added:
