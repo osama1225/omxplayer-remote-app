@@ -51,7 +51,7 @@ public class AdminPasswordDialog extends Dialog {
 								Toast.LENGTH_SHORT).show();
 						return;
 					}
-					commandSender.send(Utils.shutdownHostCmd);
+					commandSender.send(Utils.SSHCommands.shutdownHostCmd);
 				}
 
 			}

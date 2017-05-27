@@ -45,7 +45,7 @@ public class PlayListFragment extends Fragment {
 			public void run() {
 				if (!Utils.connected)
 					return;
-				String response = commandSender.send(Utils.retrieveplaylistCmd);
+				String response = commandSender.send(Utils.SSHCommands.retrieveplaylistCmd);
 				String[] videoNames = response.split("\n");
 				adapter.updateList(videoNames);
 				timerHandler.postDelayed(checkFileLog, checkInterval);
@@ -79,7 +79,7 @@ public class PlayListFragment extends Fragment {
 					
 					@Override
 					public void run() {
-						commandSender.send(Utils.selectVideoCmd,selectedName);
+						commandSender.send(Utils.SSHCommands.selectVideoCmd,selectedName);
 						connectionServiceHandler.changePlayState("p");
 					}
 				});
@@ -97,7 +97,7 @@ public class PlayListFragment extends Fragment {
 						Toast.LENGTH_SHORT).show();
 			} else {
 				MainActivity.progressBar.setVisibility(ProgressBar.VISIBLE);
-				String response = commandSender.send(Utils.retrieveplaylistCmd);
+				String response = commandSender.send(Utils.SSHCommands.retrieveplaylistCmd);
 				String[] videoNames = null;
 				if (!response.equals("")) {
 					videoNames = response.split("\n");

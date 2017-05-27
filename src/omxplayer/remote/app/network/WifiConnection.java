@@ -198,8 +198,9 @@ public class WifiConnection implements CommandSender{
 
 	@Override
 	public String send(String cmd, String... optionalParams) {
-		if (discovery != null && discovery.getSSH() != null)
+		if (discovery != null && discovery.getSSH() != null){
 			return discovery.getSSH().executeCmd(cmd, optionalParams);
+		}
 		return "";
 	}
 
@@ -336,7 +337,7 @@ public class WifiConnection implements CommandSender{
 						+ "\\\"\" >> /etc/wpa_supplicant/wpa_supplicant.conf'; ");
 				send("sudo bash -c 'echo \"key_mgmt=WPA-PSK\" >> /etc/wpa_supplicant/wpa_supplicant.conf'; ");
 				send("sudo bash -c 'echo \"}\" >> /etc/wpa_supplicant/wpa_supplicant.conf'; ");
-				send(Utils.restartHostCmd);
+				send(Utils.SSHCommands.restartHostCmd);
 				Toast.makeText(context, "Restarting...", Toast.LENGTH_SHORT)
 						.show();
 

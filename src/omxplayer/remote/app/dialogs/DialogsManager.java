@@ -14,6 +14,7 @@ public class DialogsManager {
 	private OptionsDialog optionsDialog;
 	private ScanDialog scanDialog;
 	private NetworkPasswordDialog networkPasswordDialog;
+	private NetworkModeSelectionDialog networkModeSelectionDialog;
 
 	private WifiConnection wifiConnection;
 	private Context context;
@@ -29,6 +30,7 @@ public class DialogsManager {
 		scanDialog = new ScanDialog(context, wifiConnection);
 		networkPasswordDialog = new NetworkPasswordDialog(context,
 				wifiConnection);
+		networkModeSelectionDialog = new NetworkModeSelectionDialog(context, wifiConnection);
 	}
 
 	public void prepareAndShowSendVideoListDialog() {
@@ -56,6 +58,10 @@ public class DialogsManager {
 
 	public void showNetworkPasswordDialog() {
 		networkPasswordDialog.show();
+	}
+	
+	public void showNeworkModeSelectionDialog(){
+		networkModeSelectionDialog.show();
 	}
 
 	public ScanDialog getScanDialog() {

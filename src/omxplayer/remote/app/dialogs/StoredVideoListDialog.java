@@ -66,15 +66,15 @@ public class StoredVideoListDialog extends CustomDialog<VideoItem> {
 									public void finishedSending(
 											SendStatus state, String fileName) {
 										if (state.equals(SendStatus.SUCCESS)) {
-											commandSender.send(Utils.fileSentCmd, fileName);
+											commandSender.send(Utils.SSHCommands.fileSentCmd, fileName);
 											Toast.makeText(context, "Successfully Sent!", Toast.LENGTH_LONG).show();
 											sound.play(context, R.raw.success);
 										} else if (state.equals(SendStatus.FAILED)) {
-											commandSender.send(Utils.removeCmd, fileName);
+											commandSender.send(Utils.SSHCommands.removeCmd, fileName);
 											Toast.makeText(context, "Not Sent!", Toast.LENGTH_LONG).show();
 											sound.play(context, R.raw.fail);
 										} else {
-											commandSender.send(Utils.removeCmd, fileName);
+											commandSender.send(Utils.SSHCommands.removeCmd, fileName);
 										}
 									}
 								});

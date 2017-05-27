@@ -140,10 +140,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 						playBtn.setImageResource(R.drawable.play);
 					}
 				});
-				cmd = Utils.pauseCmd;
+				cmd = Utils.SSHCommands.pauseCmd;
 			} else {
 				playBtn.setImageResource(R.drawable.pause);
-				cmd = Utils.playCmd;
+				cmd = Utils.SSHCommands.playCmd;
 			}
 			playing = !playing;
 			break;
@@ -155,10 +155,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			if (v.equals(v.getTag())) {
 				if (!playing)
 					onClick(findViewById(R.id.play_btn));
-				cmd = Utils.fastForwardCmd;
+				cmd = Utils.SSHCommands.fastForwardCmd;
 			} else if (v.getTag() != null
 					&& "Regular".equals(v.getTag().toString())) {
-				cmd = Utils.nextCmd;
+				cmd = Utils.SSHCommands.nextCmd;
 			}
 			playing = true;
 			playBtn.setImageResource(R.drawable.pause);
@@ -171,10 +171,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			if (v.equals(v.getTag())) {
 				if (!playing)
 					onClick(findViewById(R.id.play_btn));
-				cmd = Utils.rewindCmd;
+				cmd = Utils.SSHCommands.rewindCmd;
 			} else if (v.getTag() != null
 					&& "Regular".equals(v.getTag().toString())) {
-				cmd = Utils.prevCmd;
+				cmd = Utils.SSHCommands.prevCmd;
 			}
 			playing = true;
 			playBtn.setImageResource(R.drawable.pause);
@@ -184,14 +184,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				Toast.makeText(this, "Not conected", Toast.LENGTH_SHORT).show();
 				return;
 			}
-			cmd = Utils.incVolCmd;
+			cmd = Utils.SSHCommands.incVolCmd;
 			break;
 		case R.id.dec_vol_txt:
 			if (!Utils.connected) {
 				Toast.makeText(this, "Not conected", Toast.LENGTH_SHORT).show();
 				return;
 			}
-			cmd = Utils.decVolCmd;
+			cmd = Utils.SSHCommands.decVolCmd;
 			break;
 		case R.id.connect_btn:
 			dialogsManager.showScanDialog();
@@ -202,7 +202,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			return;
 
 		case R.id.src_changer_id:
-			changeBgSrc();
+			dialogsManager.showNeworkModeSelectionDialog();
+//			changeBgSrc();
 //			wifiConnection
 //					.joinDisplayToNetwork("network-name", "network-pass");
 			break;

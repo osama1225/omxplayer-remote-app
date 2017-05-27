@@ -37,7 +37,7 @@ public class RemovalVideoListPreparationAndViewTask extends
 	protected Void doInBackground(Void... params) {
 		if (Looper.myLooper() == null)
 			Looper.prepare();
-		String response = commandSender.send(Utils.retrieveplaylistCmd);
+		String response = commandSender.send(Utils.SSHCommands.retrieveplaylistCmd);
 		String[] videoNames = response.split("\n");
 		videoListRemovalAdapter = new VideoListRemovalAdapter(videoNames,
 				context);

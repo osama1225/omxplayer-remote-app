@@ -51,7 +51,7 @@ public class VideoListRemovalDialog extends CustomDialog<String> {
 						String[] videoNamesToRemove = adapter.getSelectedItems();
 						if (videoNamesToRemove != null && videoNamesToRemove.length > 0) {
 							dismiss();
-							commandSender.send(Utils.removeCmd,
+							commandSender.send(Utils.SSHCommands.removeCmd,
 									videoNamesToRemove);
 							Toast.makeText(context, "Successfully Removed!",
 									Toast.LENGTH_SHORT).show();
