@@ -314,6 +314,7 @@ public class WifiConnection implements CommandSender{
 				if (error == WifiManager.ERROR_AUTHENTICATING) {
 					Toast.makeText(context, "Authentication Failed!",
 							Toast.LENGTH_SHORT).show();
+					MainActivity.progressBar.setVisibility(View.INVISIBLE);
 				}
 			}
 		}

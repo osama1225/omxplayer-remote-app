@@ -21,6 +21,7 @@ public class NetworkPasswordDialog extends Dialog {
 	private Context context;
 	private WifiConnection wifiConnection;
 	private EditText networkPasswordEditText;
+	private TextView networkSSIDTextView;
 
 	public NetworkPasswordDialog(Context context, WifiConnection wifiConnection) {
 		super(context);
@@ -38,7 +39,7 @@ public class NetworkPasswordDialog extends Dialog {
 		window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 		window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-		((TextView) findViewById(R.id.SSID_id)).setText(Utils.SSID);
+		networkSSIDTextView = ((TextView) findViewById(R.id.SSID_id));
 		networkPasswordEditText = (EditText) findViewById(R.id.netowrk_passId);
 
 		findViewById(R.id.connect_btn_id).setOnClickListener(
@@ -75,6 +76,7 @@ public class NetworkPasswordDialog extends Dialog {
 		if (networkPasswordEditText != null) {
 			networkPasswordEditText.setText("");
 		}
+		networkSSIDTextView.setText(Utils.SSID);
 		super.show();
 	}
 
