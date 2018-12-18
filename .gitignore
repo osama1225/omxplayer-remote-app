@@ -1,3 +1,4 @@
 *.dex
 *.class
 app/build/
+.gradle/
