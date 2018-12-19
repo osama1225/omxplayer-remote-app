@@ -52,7 +52,7 @@ public class AdminPasswordDialog extends Dialog {
 								Toast.LENGTH_SHORT).show();
 						return;
 					}
-					commandSender.send(Utils.SSHCommands.shutdownHostCmd);
+					new Thread(commandSender.send(Utils.SSHCommands.shutdownHostCmd)).start();
 				}
 
 			}
