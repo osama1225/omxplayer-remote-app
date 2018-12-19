@@ -78,14 +78,13 @@ public class PlayListFragment extends Fragment {
                                     long arg3) {
                 final String selectedName = playListAdapter.getNames().get(arg2);
                 playListAdapter.setCurrentlyPlaying(selectedName);
-                getActivity().runOnUiThread(new Runnable() {
-
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
                         commandSender.send(Utils.SSHCommands.selectVideoCmd, selectedName);
                         connectionServiceHandler.changePlayState("p");
                     }
-                });
+                }).start();
             }
         });
         return rootView;
