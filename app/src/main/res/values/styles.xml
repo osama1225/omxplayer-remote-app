@@ -2,13 +2,15 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+
     -->
     <style name="AppBaseTheme" parent="android:Theme.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
+
         -->
     </style>
 
@@ -33,16 +35,16 @@
         <item name="android:background">@drawable/delete_btn_ui</item>
         <item name="android:padding">10dip</item>
     </style>
-    
-    <style name="send_mediaStyle" parent="@android:style/Widget.Button"> 
+
+    <style name="send_mediaStyle" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/send_media_ui</item>
     </style>
-    
-    <style name="remove_mediaStyle" parent="@android:style/Widget.Button"> 
+
+    <style name="remove_mediaStyle" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/remove_media_ui</item>
     </style>
-    
-    <style name="close_mediaStyle" parent="@android:style/Widget.Button"> 
+
+    <style name="close_mediaStyle" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/close_media_ui</item>
     </style>
 </resources>

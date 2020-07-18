@@ -20,63 +20,63 @@ import omxplayer.remote.app.utils.Utils;
 
 public class VideoListRemovalDialog extends CustomDialog<String> {
 
-	private Context context;
-	private CommandSender commandSender;
-	private GridView gridView;
+    private Context context;
+    private CommandSender commandSender;
+    private GridView gridView;
 
-	public VideoListRemovalDialog(Context context, CommandSender commandSender) {
-		super(context);
-		this.context = context;
-		this.commandSender = commandSender;
-		gridView = null;
-		setupDialog();
-	}
+    public VideoListRemovalDialog(Context context, CommandSender commandSender) {
+        super(context);
+        this.context = context;
+        this.commandSender = commandSender;
+        gridView = null;
+        setupDialog();
+    }
 
-	private void setupDialog() {
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.videos_list_remove);
-		final Window window = getWindow();
-		window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.WRAP_CONTENT);
-		window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-		window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    private void setupDialog() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.videos_list_remove);
+        final Window window = getWindow();
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-		gridView = (GridView) findViewById(R.id.gridView2);
-		findViewById(R.id.delete_btn_id).setOnClickListener(
-				new View.OnClickListener() {
+        gridView = (GridView) findViewById(R.id.gridView2);
+        findViewById(R.id.delete_btn_id).setOnClickListener(
+                new View.OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						CustomAdapter<String> adapter = (VideoListRemovalAdapter) gridView
-								.getAdapter();
-						String[] videoNamesToRemove = adapter.getSelectedItems();
-						if (videoNamesToRemove != null && videoNamesToRemove.length > 0) {
-							dismiss();
-							commandSender.send(Utils.SSHCommands.removeCmd,
-									videoNamesToRemove);
-							Toast.makeText(context, "Successfully Removed!",
-									Toast.LENGTH_SHORT).show();
-						}
-					}
-				});
-	}
+                    @Override
+                    public void onClick(View v) {
+                        CustomAdapter<String> adapter = (VideoListRemovalAdapter) gridView
+                                .getAdapter();
+                        String[] videoNamesToRemove = adapter.getSelectedItems();
+                        if (videoNamesToRemove != null && videoNamesToRemove.length > 0) {
+                            dismiss();
+                            commandSender.send(Utils.SSHCommands.removeCmd,
+                                    videoNamesToRemove);
+                            Toast.makeText(context, "Successfully Removed!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
 
-	private void prepareDialog(
-			final CustomAdapter<String> videoListRemovalAdapter) {
-		gridView.setAdapter(videoListRemovalAdapter);
-		gridView.setOnItemClickListener(new OnItemClickListener() {
+    private void prepareDialog(
+            final CustomAdapter<String> videoListRemovalAdapter) {
+        gridView.setAdapter(videoListRemovalAdapter);
+        gridView.setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				videoListRemovalAdapter.toggleFromSelectedIndecies(arg2);
-			}
-		});
-	}
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                    long arg3) {
+                videoListRemovalAdapter.toggleFromSelectedIndecies(arg2);
+            }
+        });
+    }
 
-	@Override
-	public void prepareAndShow(CustomAdapter<String> adapter) {
-		prepareDialog(adapter);
-		show();
-	}
+    @Override
+    public void prepareAndShow(CustomAdapter<String> adapter) {
+        prepareDialog(adapter);
+        show();
+    }
 }

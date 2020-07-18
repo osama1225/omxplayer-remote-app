@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp" >
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/pass_title_id"
@@ -13,10 +13,10 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/pass_title_id"
         android:layout_below="@+id/pass_title_id"
+        android:layout_alignLeft="@+id/pass_title_id"
         android:background="@drawable/options_bk4"
-        android:minHeight="100dp" >
+        android:minHeight="100dp">
 
         <RadioGroup
             android:id="@+id/network_mode_radio_group_id"
@@ -24,17 +24,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-             >
+            android:layout_marginTop="10dp">
 
             <RadioButton
                 android:id="@+id/network_adhoc_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="Ad-hoc"
                 android:layout_marginBottom="10dp"
-                 />
+                android:checked="true"
+                android:text="Ad-hoc" />
 
             <RadioButton
                 android:id="@+id/network_wlan_mode"

@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/list_bg"
     android:layout_marginTop="15dp"
     android:layout_marginBottom="5dp"
-    android:orientation="vertical" >
+    android:background="@drawable/list_bg"
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/done_btn"
@@ -21,13 +21,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/done_btn"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/imageView1"
+        android:layout_alignParentLeft="true"
         android:listSelector="@android:color/transparent"
         android:numColumns="2"
         android:paddingTop="5dp"
-        android:verticalSpacing="20dp" >
-    </GridView>
+        android:verticalSpacing="20dp"></GridView>
 
     <ImageView
         android:id="@+id/imageView1"

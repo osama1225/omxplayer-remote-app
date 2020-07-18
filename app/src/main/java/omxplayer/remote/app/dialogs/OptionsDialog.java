@@ -15,60 +15,60 @@ import omxplayer.remote.app.utils.Utils;
 
 public class OptionsDialog extends Dialog {
 
-	private Context context;
-	private DialogsManager dialogsManager;
+    private Context context;
+    private DialogsManager dialogsManager;
 
-	public OptionsDialog(Context context,
-			Sound sound, DialogsManager dialogsManager) {
-		super(context);
-		this.context = context;
-		this.dialogsManager = dialogsManager;
-		setupDialog();
-	}
+    public OptionsDialog(Context context,
+                         Sound sound, DialogsManager dialogsManager) {
+        super(context);
+        this.context = context;
+        this.dialogsManager = dialogsManager;
+        setupDialog();
+    }
 
-	private void setupDialog() {
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.options_dialog);
-		final Window window = getWindow();
-		window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.WRAP_CONTENT);
-		window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-		window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    private void setupDialog() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.options_dialog);
+        final Window window = getWindow();
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-		findViewById(R.id.send_media_id).setOnClickListener(
-				new View.OnClickListener() {
+        findViewById(R.id.send_media_id).setOnClickListener(
+                new View.OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						dismiss();
-						dialogsManager.prepareAndShowSendVideoListDialog();
-					}
-				});
+                    @Override
+                    public void onClick(View v) {
+                        dismiss();
+                        dialogsManager.prepareAndShowSendVideoListDialog();
+                    }
+                });
 
-		findViewById(R.id.remove_media_id).setOnClickListener(
-				new View.OnClickListener() {
+        findViewById(R.id.remove_media_id).setOnClickListener(
+                new View.OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						dismiss();
-						if (!Utils.connected) {
-							Toast.makeText(context, "Not conected",
-									Toast.LENGTH_SHORT).show();
-							return;
-						}
-						dialogsManager.prepareAndShowRemoalVideoListDialog();
-					}
-				});
+                    @Override
+                    public void onClick(View v) {
+                        dismiss();
+                        if (!Utils.connected) {
+                            Toast.makeText(context, "Not conected",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        dialogsManager.prepareAndShowRemoalVideoListDialog();
+                    }
+                });
 
-		findViewById(R.id.close_media_id).setOnClickListener(
-				new View.OnClickListener() {
+        findViewById(R.id.close_media_id).setOnClickListener(
+                new View.OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						dismiss();
-						dialogsManager.prepareAndShowPasswordDialog();
-					}
-				});
-	}
+                    @Override
+                    public void onClick(View v) {
+                        dismiss();
+                        dialogsManager.prepareAndShowPasswordDialog();
+                    }
+                });
+    }
 
 }

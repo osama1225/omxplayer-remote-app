@@ -4,12 +4,12 @@ package omxplayer.remote.app.handlers;
 // client class
 public interface ConnectionServiceHandler {
 
-	public void connectionFailed();
+    public void connectionFailed();
 
-	public void connectionLost();
+    public void connectionLost();
 
-	public void connectionEstablished();
+    public void connectionEstablished();
 
-	public void changePlayState(String state);
+    public void changePlayState(String state);
 
 }

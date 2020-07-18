@@ -6,21 +6,21 @@ import java.io.Serializable;
 
 public class VideoItem implements Comparable<VideoItem>, Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private String name;
-	private String path;
-	private Bitmap videoImage;
-	private Long size;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private String name;
+    private String path;
+    private Bitmap videoImage;
+    private Long size;
 
-	public VideoItem(String name, String path, Bitmap videoImage, Long size) {
-		this.name = name;
-		this.videoImage = videoImage;
-		this.size = size;
-		this.path = path;
-	}
+    public VideoItem(String name, String path, Bitmap videoImage, Long size) {
+        this.name = name;
+        this.videoImage = videoImage;
+        this.size = size;
+        this.path = path;
+    }
 
 //	private synchronized void writeObject(final ObjectOutputStream out)
 //			throws Exception {
@@ -49,36 +49,40 @@ public class VideoItem implements Comparable<VideoItem>, Serializable {
 //				bitmapBytes.length);
 //	}
 
-	public VideoItem() {
-		// TODO Auto-generated constructor stub
-	}
-	public String getName() {
-		return name;
-	}
+    public VideoItem() {
+        // TODO Auto-generated constructor stub
+    }
 
-	public String getPath() {
-		return path;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Long getSize() {
-		return size;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Bitmap getVideoImage() {
-		return videoImage;
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
-	public void setSize(Long size) {
-		this.size = size;
-	}
-	public void setVideoImage(Bitmap videoImage) {
-		this.videoImage = videoImage;
-	}
-	@Override
-	public int compareTo(VideoItem o) {
-		return this.name.compareTo(o.getName());
-	}
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
+    public Bitmap getVideoImage() {
+        return videoImage;
+    }
+
+    public void setVideoImage(Bitmap videoImage) {
+        this.videoImage = videoImage;
+    }
+
+    @Override
+    public int compareTo(VideoItem o) {
+        return this.name.compareTo(o.getName());
+    }
 }

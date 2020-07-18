@@ -20,16 +20,15 @@ import omxplayer.remote.app.utils.Utils;
 
 public class PlayListFragment extends Fragment {
 
+    private final long checkInterval = 2000;
     private CommandSender commandSender;
     private ConnectionServiceHandler connectionServiceHandler;
     private ViewGroup rootView;
     private ListView lv;
     private PlayListAdapter playListAdapter;
     private PlaylistRetrievalTask playlistRetrievalTask;
-
     private Handler timerHandler;
     private Runnable checkFileLog;
-    private final long checkInterval = 2000;
 
     public PlayListFragment(CommandSender commandSender, ConnectionServiceHandler connectionServiceHandler) {
         this.commandSender = commandSender;

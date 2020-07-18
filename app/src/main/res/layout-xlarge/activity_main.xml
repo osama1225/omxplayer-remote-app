@@ -2,25 +2,23 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container_id"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/controlles_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/trans"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="@android:color/transparent" >
-        </FrameLayout>
+            android:background="@android:color/transparent"></FrameLayout>
 
         <FrameLayout
             android:id="@+id/cameraId"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-        </FrameLayout>
+            android:layout_height="fill_parent"></FrameLayout>
 
         <LinearLayout
             android:id="@+id/play_list_id"
@@ -30,7 +28,7 @@
             android:layout_margin="7dp"
             android:background="@drawable/list_bg"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imageView11"
@@ -43,15 +41,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:listSelector="@android:color/transparent" >
-            </ListView>
+                android:listSelector="@android:color/transparent"></ListView>
         </LinearLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/play_btn" >
+            android:layout_toLeftOf="@+id/play_btn">
 
             <ImageButton
                 android:id="@+id/imageButton2"
@@ -71,17 +68,17 @@
             android:id="@+id/movies_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginBottom="15dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginLeft="15dp"
+            android:layout_marginBottom="15dp"
             android:src="@drawable/movies" />
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/play_btn" >
+            android:layout_toRightOf="@+id/play_btn">
 
             <ImageButton
                 android:id="@+id/imageButton1"
@@ -109,7 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/play_btn"
-            android:layout_centerHorizontal="true" >
+            android:layout_centerHorizontal="true">
 
             <ImageButton
                 android:id="@+id/imageButton3"
@@ -129,7 +126,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/play_btn"
-            android:layout_centerHorizontal="true" >
+            android:layout_centerHorizontal="true">
 
             <ImageButton
                 android:id="@+id/imageButton4"
@@ -149,7 +146,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true" >
+            android:layout_alignParentTop="true">
 
             <ImageButton
                 android:id="@+id/connect_btn"
@@ -173,10 +170,10 @@
             android:id="@+id/imageView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="15dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
             android:src="@drawable/logo" />
 
         <ImageView
@@ -184,8 +181,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="15dp"
             android:layout_marginRight="2dp"
+            android:layout_marginBottom="15dp"
             android:layout_toLeftOf="@+id/imageView1"
             android:alpha=".6"
             android:src="@drawable/logo_icon" />
@@ -194,16 +191,16 @@
             android:id="@+id/src_changer_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:layout_margin="15dp"
             android:alpha=".3"
             android:src="@drawable/cam_ic" />
     </RelativeLayout>
-    <android.support.v4.view.ViewPager
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </FrameLayout>
