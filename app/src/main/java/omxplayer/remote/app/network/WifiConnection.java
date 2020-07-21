@@ -15,6 +15,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
@@ -90,6 +91,9 @@ public class WifiConnection implements CommandSender {
      */
     public boolean askPermissionForNetworkScanning() {
         boolean allGranted = true;
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return true;
+        }
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             allGranted = false;
