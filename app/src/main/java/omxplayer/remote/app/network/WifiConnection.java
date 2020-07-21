@@ -1,15 +1,21 @@
 package omxplayer.remote.app.network;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -56,7 +62,7 @@ public class WifiConnection implements CommandSender {
         this.context = context;
         this.connectionServiceHandler = connectionServiceHandler;
         this.networksAdapter = new NetworkScanAdapter(context, null);
-        enableWifi();
+        wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         filter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
@@ -66,14 +72,57 @@ public class WifiConnection implements CommandSender {
     }
 
     private void enableWifi() {
-        wifiManager = (WifiManager) context
-                .getSystemService(Context.WIFI_SERVICE);
-        wifiManager.setWifiEnabled(true);
-
+        if (!wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(true);
+        }
     }
 
     public void scanNetworks() {
-        wifiManager.startScan();
+        enableWifi();
+        boolean scanStarted = wifiManager.startScan();
+        Log.d("debug", "scanNetworks: start scan result is " + scanStarted);
+    }
+
+    /**
+     * Check for required permissions needed for enabling network scan.
+     *
+     * @return true, if all required permissions are granted.
+     */
+    public boolean askPermissionForNetworkScanning() {
+        boolean allGranted = true;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            allGranted = false;
+            ActivityCompat.requestPermissions(
+                    context,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1
+            );
+        }
+        // for recent versions, we need to make sure location is enabled
+        final LocationManager locationManager = (LocationManager) context.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            allGranted = false;
+            tryEnablingNetworkProvider();
+        }
+        return allGranted;
+    }
+
+    private void tryEnablingNetworkProvider() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Network provider is disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        context.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     /**
