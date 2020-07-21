@@ -194,7 +194,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                 cmd = Utils.SSHCommands.decVolCmd;
                 break;
             case R.id.connect_btn:
-                dialogsManager.showScanDialog();
+                boolean allGranted = wifiConnection.askPermissionForNetworkScanning();
+                if (allGranted) {
+                    dialogsManager.showScanDialog();
+                }
                 break;
             case R.id.movies_btn:
                 if (progressBar.getVisibility() != View.VISIBLE)
@@ -217,7 +220,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
     /**
      * Sends a message.
      *
-     * @param message A string of text to send.
+     * @param cmd A control command message to send.
      */
     private void sendControlMessage(final String cmd) {
 
