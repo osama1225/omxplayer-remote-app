@@ -36,6 +36,8 @@ import omxplayer.remote.app.dialogs.DialogsManager;
 import omxplayer.remote.app.handlers.ConnectionServiceHandler;
 import omxplayer.remote.app.utils.Utils;
 
+import static omxplayer.remote.app.utils.Utils.PermissionCodes.ACCESS_FINE_LOCATION;
+
 /**
  * To be re-designed/written from scratch!!
  *
@@ -99,7 +101,7 @@ public class WifiConnection implements CommandSender {
             allGranted = false;
             ActivityCompat.requestPermissions(
                     context,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION
             );
         }
         // for recent versions, we need to make sure location is enabled

@@ -1,27 +1,31 @@
 package omxplayer.remote.app.dialogs;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import omxplayer.remote.app.R;
-import omxplayer.remote.app.utils.Sound;
 import omxplayer.remote.app.utils.Utils;
+
+import static omxplayer.remote.app.utils.Utils.PermissionCodes.READ_EXTERNAL_STORAGE;
 
 public class OptionsDialog extends Dialog {
 
-    private Context context;
+    private Activity activity;
     private DialogsManager dialogsManager;
 
-    public OptionsDialog(Context context,
-                         Sound sound, DialogsManager dialogsManager) {
-        super(context);
-        this.context = context;
+    public OptionsDialog(Activity activity, DialogsManager dialogsManager) {
+        super(activity);
+        this.activity = activity;
         this.dialogsManager = dialogsManager;
         setupDialog();
     }
@@ -40,8 +44,17 @@ public class OptionsDialog extends Dialog {
 
                     @Override
                     public void onClick(View v) {
-                        dismiss();
-                        dialogsManager.prepareAndShowSendVideoListDialog();
+                        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                                && ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(
+                                    activity,
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE
+                            );
+                        } else {
+                            dismiss();
+                            dialogsManager.prepareAndShowSendVideoListDialog();
+                        }
                     }
                 });
 
@@ -52,11 +65,11 @@ public class OptionsDialog extends Dialog {
                     public void onClick(View v) {
                         dismiss();
                         if (!Utils.connected) {
-                            Toast.makeText(context, "Not connected",
+                            Toast.makeText(activity, "Not connected",
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        dialogsManager.prepareAndShowRemoalVideoListDialog();
+                        dialogsManager.prepareAndShowRemovalVideoListDialog();
                     }
                 });
 

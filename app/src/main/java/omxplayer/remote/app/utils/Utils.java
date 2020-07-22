@@ -39,4 +39,9 @@ public class Utils {
 
     }
 
+    public class PermissionCodes {
+        public static final int ACCESS_FINE_LOCATION = 1;
+        public static final int READ_EXTERNAL_STORAGE = 2;
+    }
+
 }
