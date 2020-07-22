@@ -1,6 +1,6 @@
 package omxplayer.remote.app.dialogs;
 
-import android.content.Context;
+import android.app.Activity;
 
 import omxplayer.remote.app.network.WifiConnection;
 import omxplayer.remote.app.tasks.dialogs.RemovalVideoListPreparationAndViewTask;
@@ -18,30 +18,30 @@ public class DialogsManager {
     private NetworkModeSelectionDialog networkModeSelectionDialog;
 
     private WifiConnection wifiConnection;
-    private Context context;
+    private Activity activity;
 
-    public DialogsManager(Context context, WifiConnection wifiConnection,
+    public DialogsManager(Activity activity, WifiConnection wifiConnection,
                           Sound sound) {
         this.wifiConnection = wifiConnection;
-        this.context = context;
-        storedVideoListDialog = new StoredVideoListDialog(context, wifiConnection, sound);
-        videoListRemovalDialog = new VideoListRemovalDialog(context, wifiConnection);
-        adminPasswordDialog = new AdminPasswordDialog(context, wifiConnection);
-        optionsDialog = new OptionsDialog(context, sound, this);
-        scanDialog = new ScanDialog(context, wifiConnection);
-        networkPasswordDialog = new NetworkPasswordDialog(context,
+        this.activity = activity;
+        storedVideoListDialog = new StoredVideoListDialog(this.activity, wifiConnection, sound);
+        videoListRemovalDialog = new VideoListRemovalDialog(this.activity, wifiConnection);
+        adminPasswordDialog = new AdminPasswordDialog(this.activity, wifiConnection);
+        optionsDialog = new OptionsDialog(this.activity, this);
+        scanDialog = new ScanDialog(this.activity, wifiConnection);
+        networkPasswordDialog = new NetworkPasswordDialog(this.activity,
                 wifiConnection);
-        networkModeSelectionDialog = new NetworkModeSelectionDialog(context, wifiConnection);
+        networkModeSelectionDialog = new NetworkModeSelectionDialog(this.activity, wifiConnection);
     }
 
     public void prepareAndShowSendVideoListDialog() {
-        StoredVideoListPreparationAndViewTask storedVideoListPreparationAndViewTask = new StoredVideoListPreparationAndViewTask(context, storedVideoListDialog);
+        StoredVideoListPreparationAndViewTask storedVideoListPreparationAndViewTask = new StoredVideoListPreparationAndViewTask(activity, storedVideoListDialog);
         storedVideoListPreparationAndViewTask.execute();
     }
 
-    public void prepareAndShowRemoalVideoListDialog() {
+    public void prepareAndShowRemovalVideoListDialog() {
         RemovalVideoListPreparationAndViewTask removalVideoListPreparationAndViewTask = new RemovalVideoListPreparationAndViewTask(
-                context, wifiConnection, videoListRemovalDialog);
+                activity, wifiConnection, videoListRemovalDialog);
         removalVideoListPreparationAndViewTask.execute();
     }
 
