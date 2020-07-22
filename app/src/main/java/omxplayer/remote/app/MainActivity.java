@@ -129,7 +129,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         switch (v.getId()) {
             case R.id.play_btn:
                 if (!Utils.connected) {
-                    Toast.makeText(this, "Not conected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Not connected", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -149,7 +149,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                 break;
             case R.id.next_txt:
                 if (!Utils.connected) {
-                    Toast.makeText(this, "Not conected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Not connected", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (v.equals(v.getTag())) {
@@ -165,7 +165,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                 break;
             case R.id.prev_txt:
                 if (!Utils.connected) {
-                    Toast.makeText(this, "Not conected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Not connected", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (v.equals(v.getTag())) {
@@ -181,14 +181,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                 break;
             case R.id.inc_vol_txt:
                 if (!Utils.connected) {
-                    Toast.makeText(this, "Not conected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Not connected", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 cmd = Utils.SSHCommands.incVolCmd;
                 break;
             case R.id.dec_vol_txt:
                 if (!Utils.connected) {
-                    Toast.makeText(this, "Not conected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Not connected", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 cmd = Utils.SSHCommands.decVolCmd;
@@ -225,7 +225,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
     private void sendControlMessage(final String cmd) {
 
         if (!Utils.connected) {
-            Toast.makeText(this, "Not conected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Not connected", Toast.LENGTH_SHORT).show();
             return;
         }
         new Thread(new Runnable() {
@@ -278,8 +278,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                                 wifiConnection.setSsh(client);
                             }
                         }
-
-                        Log.d("koko", "Disconnected");
                     }
 
                 });
@@ -291,11 +289,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                     public void run() {
                         MainActivity.progressBar.setVisibility(View.INVISIBLE);
                         Toast.makeText(getApplicationContext(),
-                                "Conection Established", Toast.LENGTH_SHORT)
+                                "Connection Established", Toast.LENGTH_SHORT)
                                 .show();
                         sound.play(getApplicationContext(), R.raw.success);
                         Utils.connected = true;
-                        Log.d("koko", "connected");
                         PlayerControllers.setActivity(MainActivity.this);
                     }
                 });
@@ -412,7 +409,4 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         return wifiConnection;
     }
 
-    public ConnectionServiceHandler getmHandler() {
-        return connectionHandler;
-    }
 }

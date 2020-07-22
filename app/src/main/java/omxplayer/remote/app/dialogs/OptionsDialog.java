@@ -52,7 +52,7 @@ public class OptionsDialog extends Dialog {
                     public void onClick(View v) {
                         dismiss();
                         if (!Utils.connected) {
-                            Toast.makeText(context, "Not conected",
+                            Toast.makeText(context, "Not connected",
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
