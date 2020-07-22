@@ -53,7 +53,7 @@ public class StoredVideoListDialog extends CustomDialog<VideoItem> {
                     public void onClick(View v) {
                         // actual sending
                         if (!Utils.connected) {
-                            Toast.makeText(context, "Not conected",
+                            Toast.makeText(context, "Not connected",
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }

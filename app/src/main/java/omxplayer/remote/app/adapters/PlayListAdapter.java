@@ -23,12 +23,6 @@ public class PlayListAdapter extends BaseAdapter {
         currentlyPlaying = null;
     }
 
-    public PlayListAdapter(Context c, String[] paths) {
-        this.c = c;
-        names = new ArrayList<String>();
-        updateList(paths);
-    }
-
     @Override
     public int getCount() {
         return names.size() - 1;
@@ -51,28 +45,6 @@ public class PlayListAdapter extends BaseAdapter {
 
     public ArrayList<String> getNames() {
         return names;
-    }
-
-    public void updateList(String[] paths) {
-        if (paths == null || paths.length == 0)
-            return;
-        names = new ArrayList<String>();
-        for (String name : paths) {
-            if (name.startsWith("@#%", 0))
-                continue;
-            if (name.endsWith(".mp4") || name.endsWith(".3gp")
-                    || name.endsWith(".mkv") || name.endsWith(".avi")
-                    || name.endsWith(".mov") || name.endsWith(".mpeg")
-                    || name.endsWith(".m4v") || name.endsWith(".rmvb")) {
-                names.add(name);
-            }
-        }
-        if (names.size() > 0) {
-            //the last element in the list is the current playing video
-            currentlyPlaying = names.get(names.size() - 1);
-        }
-        notifyDataSetChanged();
-
     }
 
     @Override
@@ -103,5 +75,27 @@ public class PlayListAdapter extends BaseAdapter {
 
     public void setNamesAndRefresh(String[] names) {
         updateList(names);
+    }
+
+    private void updateList(String[] paths) {
+        if (paths == null || paths.length == 0)
+            return;
+        names = new ArrayList<String>();
+        for (String name : paths) {
+            if (name.startsWith("@#%", 0))
+                continue;
+            if (name.endsWith(".mp4") || name.endsWith(".3gp")
+                    || name.endsWith(".mkv") || name.endsWith(".avi")
+                    || name.endsWith(".mov") || name.endsWith(".mpeg")
+                    || name.endsWith(".m4v") || name.endsWith(".rmvb")) {
+                names.add(name);
+            }
+        }
+        if (names.size() > 0) {
+            //the last element in the list is the current playing video
+            currentlyPlaying = names.get(names.size() - 1);
+        }
+        notifyDataSetChanged();
+
     }
 }

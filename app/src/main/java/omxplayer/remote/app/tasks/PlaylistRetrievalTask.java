@@ -19,20 +19,20 @@ public class PlaylistRetrievalTask extends AsyncTask<Void, Void, String[]> {
     private PlayListAdapter playListAdapter;
     private ListView playlistView;
     private Context context;
-    private boolean ignoreProgressBar;
+    private boolean initializationMode;
 
     public PlaylistRetrievalTask(CommandSender commandSender, PlayListAdapter playListAdapter,
-                                 ListView playlistView, Context context, boolean ignoreProgressBar) {
+                                 ListView playlistView, Context context, boolean initializationMode) {
         this.commandSender = commandSender;
         this.playListAdapter = playListAdapter;
         this.playlistView = playlistView;
         this.context = context;
-        this.ignoreProgressBar = ignoreProgressBar;
+        this.initializationMode = initializationMode;
     }
 
     @Override
     protected void onPreExecute() {
-        if (!ignoreProgressBar) {
+        if (initializationMode) {
             MainActivity.progressBar.setVisibility(ProgressBar.VISIBLE);
         }
         super.onPreExecute();
@@ -52,10 +52,10 @@ public class PlaylistRetrievalTask extends AsyncTask<Void, Void, String[]> {
     @Override
     protected void onPostExecute(String[] videoNames) {
         playListAdapter.setNamesAndRefresh(videoNames);
-        if (!ignoreProgressBar) {
+        if (initializationMode) {
             MainActivity.progressBar.setVisibility(ProgressBar.INVISIBLE);
+            playlistView.setAdapter(playListAdapter);
         }
-        playlistView.setAdapter(playListAdapter);
         super.onPostExecute(videoNames);
     }
 }

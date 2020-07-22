@@ -48,7 +48,7 @@ public class AdminPasswordDialog extends Dialog {
                     // perform close function
                     dismiss();
                     if (!Utils.connected) {
-                        Toast.makeText(context, "Not conected",
+                        Toast.makeText(context, "Not connected",
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }

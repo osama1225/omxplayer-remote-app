@@ -48,7 +48,7 @@ public class PlayListFragment extends Fragment {
                     return;
                 }
                 //ignore showing progressbar..cause this in an interval update while the view is shown
-                playlistRetrievalTask = new PlaylistRetrievalTask(commandSender, playListAdapter, lv, getActivity(), true);
+                playlistRetrievalTask = new PlaylistRetrievalTask(commandSender, playListAdapter, lv, getActivity(), false);
                 playlistRetrievalTask.execute();
                 timerHandler.postDelayed(checkFileLog, checkInterval);
             }
@@ -63,7 +63,7 @@ public class PlayListFragment extends Fragment {
         if (rootView == null) {
             rootView = (ViewGroup) inflater.inflate(
                     R.layout.videos_playlist_screen, container, false);
-            lv = (ListView) rootView.findViewById(R.id.listView2);
+            lv = rootView.findViewById(R.id.listView2);
             rootView.setTag(lv);
         } else {
             lv = (ListView) rootView.getTag();
@@ -93,10 +93,10 @@ public class PlayListFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser) {
             if (!Utils.connected) {
-                Toast.makeText(getActivity(), "Not conected",
+                Toast.makeText(getActivity(), "Not connected",
                         Toast.LENGTH_SHORT).show();
             } else {
-                playlistRetrievalTask = new PlaylistRetrievalTask(commandSender, playListAdapter, lv, getActivity(), false);
+                playlistRetrievalTask = new PlaylistRetrievalTask(commandSender, playListAdapter, lv, getActivity(), true);
                 playlistRetrievalTask.execute();
                 timerHandler.postDelayed(checkFileLog, checkInterval);
             }

@@ -54,14 +54,12 @@ public class NSD {
 
             @Override
             public void onDiscoveryStopped(String serviceType) {
-                Log.d("koko", "discovery stopepd : ");
-
+                Log.d(this.getClass().getName(), "onDiscoveryStopped: " + serviceType);
             }
 
             @Override
             public void onDiscoveryStarted(String serviceType) {
-                // TODO Auto-generated method stub
-                Log.d("koko", "discovery started : " + serviceType);
+                Log.d(this.getClass().getName(), "discovery started : " + serviceType);
 
             }
         };
@@ -94,7 +92,7 @@ public class NSD {
 
         @Override
         public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
-            Log.d("koko", "resolver faield: " + errorCode);
+            Log.d(this.getClass().getName(), "onResolveFailed: " + errorCode);
         }
     }
 }
