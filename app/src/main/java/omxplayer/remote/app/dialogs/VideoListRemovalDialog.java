@@ -10,7 +10,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import omxplayer.remote.app.R;
 import omxplayer.remote.app.adapters.CustomAdapter;
@@ -49,14 +48,16 @@ public class VideoListRemovalDialog extends CustomDialog<String> {
                     public void onClick(View v) {
                         CustomAdapter<String> adapter = (VideoListRemovalAdapter) gridView
                                 .getAdapter();
-                        String[] videoNamesToRemove = adapter.getSelectedItems();
+                        final String[] videoNamesToRemove = adapter.getSelectedItems();
                         if (videoNamesToRemove != null && videoNamesToRemove.length > 0) {
                             dismiss();
-                            //TODO fix network call on main thread
-                            commandSender.send(Utils.SSHCommands.removeCmd,
-                                    videoNamesToRemove);
-                            Toast.makeText(context, "Successfully Removed!",
-                                    Toast.LENGTH_SHORT).show();
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    commandSender.send(Utils.SSHCommands.removeCmd,
+                                            videoNamesToRemove);
+                                }
+                            }).start();
                         }
                     }
                 });
