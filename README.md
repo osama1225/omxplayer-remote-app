@@ -10,7 +10,7 @@ Its main features:
 - Show on screen notification for quick controls when the screen is off.
 - Close the Pi device.
 
-[screenshots](https://drive.google.com/open?id=0B17oSX7YuAWOfmhqQVNiOWxpWnVuQmVrNUtqSFhlQzhfRkRYVlpxaTMtXzAtcnVVQndKRXc)
+[screenshots](https://drive.google.com/drive/folders/0B17oSX7YuAWOfmhqQVNiOWxpWnVuQmVrNUtqSFhlQzhfRkRYVlpxaTMtXzAtcnVVQndKRXc?resourcekey=0-czQ3_dScPy8MSJAf2Rtapw)
 
 
 #### About the Customized Raspberry Pi image:
